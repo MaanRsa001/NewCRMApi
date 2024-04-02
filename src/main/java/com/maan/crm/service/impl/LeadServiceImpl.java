@@ -820,11 +820,11 @@ public class LeadServiceImpl implements LeadService {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		try {
-			if (req.getCc() == null || StringUtils.isBlank(req.getCc())) {
-				errors.add(new Error("01", "CC", "Please Enter CC"));
-			} else if (req.getCc().length() > 100) {
-				errors.add(new Error("01", "CC", "Please Enter CC within 100 Character"));
-			}
+//			if (req.getCc() == null || StringUtils.isBlank(req.getCc())) {
+//				errors.add(new Error("01", "CC", "Please Enter CC"));
+//			} else if (req.getCc().length() > 100) {
+//				errors.add(new Error("01", "CC", "Please Enter CC within 100 Character"));
+//			}
 			if (req.getColorId() == null || StringUtils.isBlank(req.getColorId())) {
 				errors.add(new Error("02", "Color Id", "Please Enter Color Id"));
 			} else if (!StringUtils.isNumeric(req.getColorId())) {
@@ -858,19 +858,19 @@ public class LeadServiceImpl implements LeadService {
 			} else if (req.getManufactureYear().length() > 4) {
 				errors.add(new Error("07", "Manufature Year", "Please Enter Manufature Year in numbers"));
 			}
-			if (req.getPlateChar() == null || StringUtils.isBlank(req.getPlateChar())) {
-				errors.add(new Error("08", "Plate Char", "Please Enter Plate Char"));
-			} else if (req.getPlateChar().length() > 100) {
-				errors.add(new Error("08", "Plate Char", "Please Enter Plate Char within 100 Character"));
-			}
-			if (req.getPlateCharId() == null || StringUtils.isBlank(req.getPlateCharId())) {
-				errors.add(new Error("09", "Plate Char", "Please Enter Plate Char"));
-			}
-			if (req.getPlateNo() == null || StringUtils.isBlank(req.getPlateNo())) {
-				errors.add(new Error("10", "Plate No", "Please Enter Plate No"));
-			} else if (!StringUtils.isNumeric(req.getPlateNo())) {
-				errors.add(new Error("10", "Plate No", "Please Enter Plate No in numbers"));
-			}
+//			if (req.getPlateChar() == null || StringUtils.isBlank(req.getPlateChar())) {
+//				errors.add(new Error("08", "Plate Char", "Please Enter Plate Char"));
+//			} else if (req.getPlateChar().length() > 100) {
+//				errors.add(new Error("08", "Plate Char", "Please Enter Plate Char within 100 Character"));
+//			}
+//			if (req.getPlateCharId() == null || StringUtils.isBlank(req.getPlateCharId())) {
+//				errors.add(new Error("09", "Plate Char", "Please Enter Plate Char"));
+//			}
+//			if (req.getPlateNo() == null || StringUtils.isBlank(req.getPlateNo())) {
+//				errors.add(new Error("10", "Plate No", "Please Enter Plate No"));
+//			} else if (!StringUtils.isNumeric(req.getPlateNo())) {
+//				errors.add(new Error("10", "Plate No", "Please Enter Plate No in numbers"));
+//			}
 			if (req.getSeatingCapacity() == null || StringUtils.isBlank(req.getSeatingCapacity())) {
 				errors.add(new Error("11", "Seating Capacity", "Please Enter Seating Capacity"));
 			} else if (!StringUtils.isNumeric(req.getSeatingCapacity())) {
@@ -919,16 +919,16 @@ public class LeadServiceImpl implements LeadService {
 			} else if (req.getHypothication().length() > 100) {
 				errors.add(new Error("21", "Hypothication", "Please Enter Hypothication within 100 Character"));
 			}
-			if (req.getPos() == null || StringUtils.isBlank(req.getPos())) {
-				errors.add(new Error("22", "Pos", "Please Enter Pos"));
-			} else if (req.getPos().length() > 100) {
-				errors.add(new Error("22", "Pos", "Please Enter Pos within 100 Character"));
-			}
-			if (req.getPinCode() == null || StringUtils.isBlank(req.getPinCode())) {
-				errors.add(new Error("23", "Pin Code", "Please Enter Pin Code"));
-			} else if (!StringUtils.isNumeric(req.getPinCode())) {
-				errors.add(new Error("23", "Pin Code", "Please Enter PinCode in numbers"));
-			}
+//			if (req.getPos() == null || StringUtils.isBlank(req.getPos())) {
+//				errors.add(new Error("22", "Pos", "Please Enter Pos"));
+//			} else if (req.getPos().length() > 100) {
+//				errors.add(new Error("22", "Pos", "Please Enter Pos within 100 Character"));
+//			}
+//			if (req.getPinCode() == null || StringUtils.isBlank(req.getPinCode())) {
+//				errors.add(new Error("23", "Pin Code", "Please Enter Pin Code"));
+//			} else if (!StringUtils.isNumeric(req.getPinCode())) {
+//				errors.add(new Error("23", "Pin Code", "Please Enter PinCode in numbers"));
+//			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1421,7 +1421,7 @@ public class LeadServiceImpl implements LeadService {
 			query.multiselect(l.get("leadId").alias("LeadId"),enquiryCount.alias("EnquiryCount")  , quoteCount.alias("QuoteCount") ,
 					policyCount.alias("PolicyCount") );
 			
-			query.where(n1).groupBy(l.get("leadId"));//.orderBy(orderList);
+			query.where(n1).groupBy(l.get("leadId")).orderBy(orderList);
 			TypedQuery<Tuple> result = em.createQuery(query);
 			list = result.getResultList();
 
