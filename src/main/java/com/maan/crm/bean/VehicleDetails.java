@@ -35,11 +35,11 @@ public class VehicleDetails implements Serializable {
 	private String vehChassisNo;
 	
 	@Id
-	@Column(name = "COMAPNY_ID",nullable=false, length = 100)
+	@Column(name = "COMPANY_ID",nullable=false, length = 100)
 	private String companyId;
 
 	//ENTITY
-	@Column(name = "VEH_CODE",nullable=false, length = 100)
+	@Column(name = "VEH_CODE", length = 100)
 	private Integer vehCode;
 	
 	
@@ -65,7 +65,7 @@ public class VehicleDetails implements Serializable {
 	private String vehBodytype;
 
 	@Column(name = "COLOR_ID")
-	private Integer colorlId;
+	private Integer colorId;
 
 	@Column(name = "COLOR_VARIANT", length = 100)
 	private String colorVariant;
@@ -94,14 +94,14 @@ public class VehicleDetails implements Serializable {
 	@Column(name = "VEH_REMARKS", length = 200)
 	private String vehRemarks;
 
-	@Column(name = "PLATE_NO")
-	private Integer plateNo;
-
-	@Column(name = "PLATE_CHAR_ID")
-	private Integer plateCharId;
-
-	@Column(name = "PLATE_CHAR", length = 100)
-	private String plateChar;
+//	@Column(name = "PLATE_NO")
+//	private Integer plateNo;
+//
+//	@Column(name = "PLATE_CHAR_ID")
+//	private Integer plateCharId;
+//
+//	@Column(name = "PLATE_CHAR", length = 100)
+//	private String plateChar;
 
 	@Temporal(TemporalType.DATE)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "en-IN", timezone = "Asia/Calcutta")
@@ -140,45 +140,38 @@ public class VehicleDetails implements Serializable {
     @Column(name="HYPOTHICATION")
     private String hypothication ;
     
-    @Column(name="POS_ID")
-    private String posId ; 
-    
-    @Column(name="POS")
-    private String pos ;
-    
-    @Column(name="RTO_ID")
-    private String rtoId ;
-    
-    @Column(name="RTO")
-    private String rto ;
-    
-    @Column(name="ZONE_ID")
-    private String zoneId; ;
-    
-    @Column(name="ZONE")
-    private String zone ;
+	/*
+	 * @Column(name="POS_ID") private String posId ;
+	 * 
+	 * @Column(name="POS") private String pos ;
+	 * 
+	 * @Column(name="RTO_ID") private String rtoId ;
+	 * 
+	 * @Column(name="RTO") private String rto ;
+	 * 
+	 * @Column(name="ZONE_ID") private String zoneId; ;
+	 * 
+	 * @Column(name="ZONE") private String zone ;
+	 */
     
     @Column(name="VEH_REGN_ADDRESS")
     private String vehRegnAddress;
     
-    @Column(name="STATE_ID")
-    private String stateId;
-    
-    @Column(name="STATE")
-    private String state;
-    
-    
-    @Column(name="CITY_ID")
-    private String cityId ;
-    
-    @Column(name="CITY")
-    private String city ;
-    
+	/*
+	 * @Column(name="STATE_ID") private String stateId;
+	 * 
+	 * @Column(name="STATE") private String state;
+	 * 
+	 * 
+	 * @Column(name="CITY_ID") private String cityId ;
+	 * 
+	 * @Column(name="CITY") private String city ;
+	 */
     @Column(name="VEH_USER_NAME")
     private String vehUserName ;
     
-    @Column(name="VEH_USER_CONTACT")
-    private String vehUserContact ;
+//    @Column(name="VEH_USER_CONTACT")
+//    private String vehUserContact ;
 
     @Column(name="PIN_CODE")
     private String pinCode ;
