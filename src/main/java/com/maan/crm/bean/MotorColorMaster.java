@@ -55,8 +55,8 @@ public class MotorColorMaster implements Serializable  {
     @Column(name="COLOR_DESC", length=100)
     private String    colorDesc ;
     
-    @Column(name="CORE_APP_CODE", length=100)
-    private String    coreAppCode ;
+//    @Column(name="CORE_APP_CODE", length=100)
+//    private String    coreAppCode ;
 
     @Column(name="STATUS", length=100)
     private String    status ;

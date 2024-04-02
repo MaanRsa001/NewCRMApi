@@ -128,7 +128,7 @@ public class VehicleDetailsController {
 	public ResponseEntity<CommonCrmRes> saveVehicleDetails(@RequestBody VehicleDetailsSaveReq req) {
 		reqPrinter.reqPrint(req);
 		CommonCrmRes data = new CommonCrmRes();
-		List<Error> validation = entityService.validateVehicle(req);
+		List<Error> validation = vehicleservice.validateVehicle(req);
 		//// validation
 		if (validation != null && validation.size() != 0) {
 			data.setCommonResponse(null);
@@ -140,7 +140,7 @@ public class VehicleDetailsController {
 		} else {
 			/////// save
 
-			SuccessRes res = entityService.saveVehicle(req);
+			SuccessRes res = vehicleservice.saveVehDetail(req);
 			data.setCommonResponse(res);
 			data.setIsError(false);
 			data.setErrorMessage(Collections.emptyList());
