@@ -22,7 +22,7 @@ public class VehicleDetailsSaveReq {
 	private String vehCode;
 	
 	@JsonProperty("InsuranceId")
-	private String comapnyId;
+	private String companyId;
 	
 	@JsonProperty("BranchCode")
     private String     branchCode ;
@@ -96,11 +96,11 @@ public class VehicleDetailsSaveReq {
 	@JsonProperty("Hypothication")
 	private String hypothication;
 
-	@JsonProperty("Pos")
-	private String pos;
-
-	@JsonProperty("PosId")
-	private String posId;
+//	@JsonProperty("Pos")
+//	private String pos;
+//
+//	@JsonProperty("PosId")
+//	private String posId;
 
 	@JsonProperty("VehRemarks")
 	private String vehRemarks;
@@ -112,17 +112,17 @@ public class VehicleDetailsSaveReq {
 	@JsonProperty("VehRegnDate")
 	private Date vehRegnDate;
 
-	@JsonProperty("RtoId")
-	private String rtoId;
-
-	@JsonProperty("Rto")
-	private String rto;
-
-	@JsonProperty("ZoneId")
-	private String zoneId;
-
-	@JsonProperty("Zone")
-	private String zone;
+//	@JsonProperty("RtoId")
+//	private String rtoId;
+//
+//	@JsonProperty("Rto")
+//	private String rto;
+//
+//	@JsonProperty("ZoneId")
+//	private String zoneId;
+//
+//	@JsonProperty("Zone")
+//	private String zone;
 	
 	@JsonProperty("ColorId")
 	private String colorId;
@@ -133,17 +133,17 @@ public class VehicleDetailsSaveReq {
 	@JsonProperty("VehRegnAddress")
 	private String vehRegnAddress;
 
-	@JsonProperty("StateId")
-	private String stateId;
-
-	@JsonProperty("State")
-	private String state;
-	
-	@JsonProperty("CityId")
-	private String cityId;
-
-	@JsonProperty("City")
-	private String city;
+//	@JsonProperty("StateId")
+//	private String stateId;
+//
+//	@JsonProperty("State")
+//	private String state;
+//	
+//	@JsonProperty("CityId")
+//	private String cityId;
+//
+//	@JsonProperty("City")
+//	private String city;
 
 	@JsonProperty("PinCode")
 	private String pinCode;
@@ -151,17 +151,17 @@ public class VehicleDetailsSaveReq {
 	@JsonProperty("VehUserName")
 	private String vehUserName;
 	
-	@JsonProperty("VehUserContact")
-	private String vehUserContact;
+//	@JsonProperty("VehUserContact")
+//	private String vehUserContact;
 
-	@JsonProperty("PlateNo")
-	private String plateNo;
-
-	@JsonProperty("PlateCharId")
-	private String plateCharId;
-
-	@JsonProperty("PlateChar")
-	private String plateChar;
+//	@JsonProperty("PlateNo")
+//	private String plateNo;
+//
+//	@JsonProperty("PlateCharId")
+//	private String plateCharId;
+//
+//	@JsonProperty("PlateChar")
+//	private String plateChar;
 	
 	
 

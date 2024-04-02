@@ -173,7 +173,7 @@ public class VehicleDetails implements Serializable {
 //    @Column(name="VEH_USER_CONTACT")
 //    private String vehUserContact ;
 
-    @Column(name="PIN_CODE")
-    private String pinCode ;
+//    @Column(name="PIN_CODE")
+//    private String pinCode ;
     
 }
