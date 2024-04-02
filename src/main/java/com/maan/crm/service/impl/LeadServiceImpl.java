@@ -987,7 +987,7 @@ public class LeadServiceImpl implements LeadService {
 			int limit = StringUtils.isBlank(req.getLimit()) ? 0 : Integer.valueOf(req.getLimit());
 			int offset = StringUtils.isBlank(req.getOffset()) ? 1000 : Integer.valueOf(req.getOffset());
 			Pageable paging = PageRequest.of(limit, offset, Sort.by("entryDate").descending());
-			Page<VehicleDetails> vehicleDetails = vehRepo.findByComapnyIdAndBranchCode(paging, req.getInsId(),
+			Page<VehicleDetails> vehicleDetails = vehRepo.findByCompanyIdAndBranchCode(paging, req.getInsId(),
 					req.getBranchCode());
 
 			for (VehicleDetails data : vehicleDetails) {

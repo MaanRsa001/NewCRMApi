@@ -12,7 +12,7 @@ public interface VehicleDetailsRepository extends JpaRepository<VehicleDetails, 
 
 	VehicleDetails findByVehChassisNo(String vehChassisNo);
 
-	Page<VehicleDetails> findByComapnyIdAndBranchCode(Pageable paging, String insId, String branchCode);
+	Page<VehicleDetails> findByCompanyIdAndBranchCode(Pageable paging, String insId, String branchCode);
 
 	VehicleDetails findByVehCode(Integer valueOf);
 

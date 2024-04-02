@@ -100,7 +100,7 @@ public class VehicleDetailsServiceImpl implements VehicleDetailsService {
 			Pageable paging = PageRequest.of(limit, offset, Sort.by("entryDate").descending());
 
 			// Find
-			Page<VehicleDetails> VehicleDetails = vehiclerepo.findByComapnyIdAndBranchCode(paging ,req.getInsId(),req.getBranchCode());
+			Page<VehicleDetails> VehicleDetails = vehiclerepo.findByCompanyIdAndBranchCode(paging ,req.getInsId(),req.getBranchCode());
 
 			// Map
 			for (VehicleDetails data : VehicleDetails.getContent()) {

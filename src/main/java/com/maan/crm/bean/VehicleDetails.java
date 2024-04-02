@@ -36,7 +36,7 @@ public class VehicleDetails implements Serializable {
 	
 	@Id
 	@Column(name = "COMAPNY_ID",nullable=false, length = 100)
-	private String comapnyId;
+	private String companyId;
 
 	//ENTITY
 	@Column(name = "VEH_CODE",nullable=false, length = 100)
