@@ -1,0 +1,18 @@
+package com.maan.crm.res;
+
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
+@Data
+public class ProspectGetAllCountRes {
+	
+
+	
+	@JsonProperty("ProspectCount")
+	private Long prospectCount;
+	
+	@JsonProperty("ProspectDetails")
+	private  List<CrmLeadRes> prospectDetails;
+}

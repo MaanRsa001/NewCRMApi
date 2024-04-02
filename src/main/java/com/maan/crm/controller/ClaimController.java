@@ -1,0 +1,133 @@
+package com.maan.crm.controller;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.maan.crm.req.ClaimOtherDetailsGetReq;
+import com.maan.crm.req.ClaimOtherDetailsSaveReq;
+import com.maan.crm.req.CommissionMotorDetailsGetReq;
+import com.maan.crm.req.CommissionMotorDetailsSaveReq;
+import com.maan.crm.req.CommissionNonMotorDetailsGetReq;
+import com.maan.crm.req.CommissionNonMotorDetailsSaveReq;
+import com.maan.crm.req.EndorsementFinancialDetailsGetReq;
+import com.maan.crm.req.EndorsementFinancialDetailsSaveReq;
+import com.maan.crm.req.EndorsementGeneralDetailsGetReq;
+import com.maan.crm.req.EndorsementGeneralDetailsSaveReq;
+import com.maan.crm.req.EndorsementPaymentDetailsGetReq;
+import com.maan.crm.req.EndorsementPaymentDetailsSaveReq;
+import com.maan.crm.req.PolicyAddOnGetReq;
+import com.maan.crm.req.PolicyAddOnSaveReq;
+import com.maan.crm.req.PolicyDetailsSaveReq;
+import com.maan.crm.req.PolicyAdditionalDetailsGetReq;
+import com.maan.crm.req.PolicyAdditionalDetailsSaveReq;
+import com.maan.crm.req.PolicyNomineeDetailsGetReq;
+import com.maan.crm.req.PolicyNomineeDetailsSaveReq;
+import com.maan.crm.req.PolicyPaymentDetailsGetReq;
+import com.maan.crm.req.PolicyPaymentDetailsSaveReq;
+import com.maan.crm.res.ClaimOtherDetailsRes;
+import com.maan.crm.res.ClaimSuccessRes;
+import com.maan.crm.res.CommissionMotorDetailsRes;
+import com.maan.crm.res.CommissionNonMotorDetailsRes;
+import com.maan.crm.res.CommissionSuccessRes;
+import com.maan.crm.res.CommonCrmRes;
+import com.maan.crm.res.EndorsementFinancialDetailsRes;
+import com.maan.crm.res.EndorsementGeneralDetailsRes;
+import com.maan.crm.res.EndorsementPaymentDetailsRes;
+import com.maan.crm.res.EndorsementSuccessRes;
+import com.maan.crm.res.PolicyAddOnRes;
+import com.maan.crm.res.PolicyDetailsRes;
+import com.maan.crm.res.PolicyAdditionalDetailsRes;
+import com.maan.crm.res.PolicyNomineeDetailsRes;
+import com.maan.crm.res.PolicyPaymentDetailsRes;
+import com.maan.crm.res.PolicySuccessRes;
+import com.maan.crm.res.SuccessRes;
+import com.maan.crm.service.CRMValidationService;
+import com.maan.crm.service.ClaimService;
+import com.maan.crm.service.CommissionService;
+import com.maan.crm.service.EndorsementService;
+import com.maan.crm.service.PolicyService;
+import com.maan.crm.service.PrintReqService;
+import com.maan.crm.util.error.Error;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@RestController
+@Api(tags = "CLAIM : Claim Details ", description = "API's")
+@RequestMapping("/master")
+public class ClaimController {
+
+	@Autowired
+	private ClaimService Service;
+
+	@Autowired
+	private CRMValidationService crmvalidation;
+
+	@Autowired
+	private PrintReqService reqPrinter;
+
+	
+	// Claim Other Details Insert and Update
+
+	@PostMapping(value = "/saveclaimotherdetails")
+	@ApiOperation(value = "This method is to Save Claim Other Details")
+
+	// Insert
+	public ResponseEntity<CommonCrmRes> saveClaimOtherDetails(@RequestBody ClaimOtherDetailsSaveReq req) {
+
+		reqPrinter.reqPrint(req);
+		CommonCrmRes data = new CommonCrmRes();
+		List<Error> validation = Service.validateClaimOtherDetails(req);
+		if (validation != null && validation.size() != 0) {
+			data.setCommonResponse(null);
+			data.setIsError(true);
+			data.setErrorMessage(validation);
+			data.setMessage("Failed");
+			return new ResponseEntity<CommonCrmRes>(data, HttpStatus.OK);
+
+		} else {
+			/////// save
+			ClaimSuccessRes res = Service.saveClaimOtherDetails(req);
+			data.setCommonResponse(res);
+			data.setIsError(false);
+			data.setErrorMessage(Collections.emptyList());
+			data.setMessage("Success");
+			if (res != null) {
+				return new ResponseEntity<CommonCrmRes>(data, HttpStatus.CREATED);
+			} else {
+				return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			}
+		}
+
+	}
+
+	// Claim Other Details Get Method
+
+	@PostMapping("/getclaimotherdetails")
+	@ApiOperation(value = "This method is to Get Claim Other Details")
+
+	public ResponseEntity<CommonCrmRes> getClaimOtherDetails(@RequestBody ClaimOtherDetailsGetReq req) {
+		CommonCrmRes data = new CommonCrmRes();
+
+		 ClaimOtherDetailsRes res = Service.getClaimOtherDetails(req);
+		data.setCommonResponse(res);
+		data.setIsError(false);
+		data.setErrorMessage(Collections.emptyList());
+		data.setMessage("Success");
+
+		if (res != null) {
+			return new ResponseEntity<CommonCrmRes>(data, HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
+
+		}
