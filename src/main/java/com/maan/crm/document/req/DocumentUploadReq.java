@@ -30,10 +30,10 @@ public class DocumentUploadReq {
 	@JsonProperty("DocApplicableId")
 	private String docApplicableId;
 
-	@JsonProperty("InsuranceId")
+	@JsonProperty("InsCompanyId")
 	private String insCompanyId;
 
-	@JsonProperty("ClientRefNo")
+	@JsonProperty("ClientId")
 	private String clientId;
 	
 	@JsonProperty("RequestedBy")

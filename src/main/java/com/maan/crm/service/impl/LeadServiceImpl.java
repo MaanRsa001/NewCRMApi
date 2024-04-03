@@ -113,6 +113,7 @@ import com.maan.crm.res.SuccessRes;
 import com.maan.crm.res.VehicleDetailsGridRes;
 import com.maan.crm.res.VehicleDetailsRes;
 import com.maan.crm.service.LeadService;
+import com.maan.crm.service.VehicleDetailsService;
 import com.maan.crm.util.error.Error;
 
 @Service
@@ -499,13 +500,17 @@ public class LeadServiceImpl implements LeadService {
 		return resList;
 
 	}
-
+	
+	@Autowired
+	private VehicleDetailsService vehicleService;
+	
 // Get by Lead Id
 	@Override
 	public LeadDetailsJsonTempRes getLead(LeadDetailsGetReq req) {
 		LeadDetailsJsonTempRes commonRes = new LeadDetailsJsonTempRes();
 		OldPolicySaveReq oldPolicyRes = new OldPolicySaveReq();
-		ProspectPaymentSaveReq paymentRes = new ProspectPaymentSaveReq();
+		//ProspectPaymentSaveReq paymentRes = new ProspectPaymentSaveReq();
+		VehicleDetailsRes vehicleInformation = new VehicleDetailsRes();
 		CrmLeadRes leadRes = new CrmLeadRes();
 		ModelMapper mapper = new ModelMapper();
 		try {
@@ -532,6 +537,13 @@ public class LeadServiceImpl implements LeadService {
 				if (oldData != null) {
 					oldPolicyRes = mapper.map(oldData, OldPolicySaveReq.class);
 				}
+			}else if(StringUtils.isNotBlank(req.getLeadId())) {
+				
+				VehicleDetailsGetReq vehicledetail = new VehicleDetailsGetReq();
+				vehicledetail.setLeadId(req.getLeadId());
+				VehicleDetailsRes vehDetailsById = vehicleService.getVehDetailsById(vehicledetail);
+				commonRes.setVehicleDetails(vehDetailsById);			
+				
 			}
 
 			// Payment Res
@@ -562,12 +574,12 @@ public class LeadServiceImpl implements LeadService {
 		List<Error> errors = new ArrayList<Error>();
 		try {
 
-			if (tempReq.getLeadDetails().getLeadId() != null
-					|| StringUtils.isNotBlank(tempReq.getLeadDetails().getLeadId())) {
-				if (!StringUtils.isNumeric(tempReq.getLeadDetails().getLeadId())) {
-					errors.add(new Error("01", "Lead Id", "Please Enter Valid Lead Id "));
-				}
-			}
+//			if (tempReq.getLeadDetails().getLeadId() != null
+//					|| StringUtils.isNotBlank(tempReq.getLeadDetails().getLeadId())) {
+//				if (!StringUtils.isNumeric(tempReq.getLeadDetails().getLeadId())) {
+//					errors.add(new Error("01", "Lead Id", "Please Enter Valid Lead Id "));
+//				}
+//			}
 
 			if (req.getOldCommisBasePremium() == null || StringUtils.isBlank(req.getOldCommisBasePremium())) {
 				errors.add(new Error("02", "Old Commission Base Premium", "Please Enter Old Commission Base Premium"));
@@ -1421,7 +1433,7 @@ public class LeadServiceImpl implements LeadService {
 			query.multiselect(l.get("leadId").alias("LeadId"),enquiryCount.alias("EnquiryCount")  , quoteCount.alias("QuoteCount") ,
 					policyCount.alias("PolicyCount") );
 			
-			query.where(n1).groupBy(l.get("leadId")).orderBy(orderList);
+			query.where(n1).groupBy(l.get("leadId"),l.get("updatedDate")).orderBy(orderList);
 			TypedQuery<Tuple> result = em.createQuery(query);
 			list = result.getResultList();
 
@@ -1523,7 +1535,7 @@ public class LeadServiceImpl implements LeadService {
 			query.multiselect(l.get("leadId").alias("LeadId"),enquiryCount.alias("EnquiryCount")  , quoteCount.alias("QuoteCount") ,
 					policyCount.alias("PolicyCount") );
 			
-			query.where(n1).groupBy(l.get("leadId")).orderBy(orderList);
+			query.where(n1).groupBy(l.get("leadId"),l.get("updatedDate")).orderBy(orderList);
 			TypedQuery<Tuple> result = em.createQuery(query);
 			list = result.getResultList();
 			

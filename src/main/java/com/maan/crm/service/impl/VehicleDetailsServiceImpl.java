@@ -252,8 +252,8 @@ public class VehicleDetailsServiceImpl implements VehicleDetailsService {
 
 		ModelMapper mapper = new ModelMapper();
 		try {
-			String VehicleRefNo = req.getVehChassisNo();
-			VehicleDetails data = vehiclerepo.findByVehChassisNo(VehicleRefNo);
+			String leadId = req.getLeadId();
+			VehicleDetails data = vehiclerepo.findByLeadId(leadId);
 
 			res = mapper.map(data, VehicleDetailsRes.class);
 

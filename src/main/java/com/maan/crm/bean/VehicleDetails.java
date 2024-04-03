@@ -38,6 +38,9 @@ public class VehicleDetails implements Serializable {
 	@Column(name = "COMPANY_ID",nullable=false, length = 100)
 	private String companyId;
 
+	@Column(name = "LEAD_ID", length = 100)
+	private String leadId;
+	
 	//ENTITY
 	@Column(name = "VEH_CODE", length = 100)
 	private Integer vehCode;

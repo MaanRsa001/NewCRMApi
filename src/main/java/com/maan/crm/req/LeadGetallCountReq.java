@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class LeadGetallCountReq {
 
-	@JsonProperty("InsuranceId")
+	@JsonProperty("InsCompanyId")
 	private String insId ;
 	@JsonProperty("BranchCode")
 	private String branchCode ;

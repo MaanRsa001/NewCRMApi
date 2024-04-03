@@ -183,4 +183,5 @@ public class LeadDetails implements Serializable {
 	    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "en-IN", timezone = "Asia/Calcutta")
 	    @Column(name="UPDATED_DATE")
 	    private Date       updatedDate ;
+		
 }

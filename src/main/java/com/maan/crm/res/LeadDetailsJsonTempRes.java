@@ -27,4 +27,7 @@ public class LeadDetailsJsonTempRes {
 
 	@JsonProperty("ProspectPayment")
 	private ProspectPaymentSaveReq prospectPayment;
+	
+	@JsonProperty("VehicleDetails")
+	private VehicleDetailsRes vehicleDetails;
 }

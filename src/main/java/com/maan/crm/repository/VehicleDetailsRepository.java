@@ -16,6 +16,8 @@ public interface VehicleDetailsRepository extends JpaRepository<VehicleDetails, 
 
 	VehicleDetails findByVehCode(Integer valueOf);
 
+	VehicleDetails findByLeadId(String leadId);
+
 
 
 }

@@ -16,11 +16,13 @@ import lombok.Setter;
 @AllArgsConstructor
 public class VehicleDetailsGetReq {
 
-
+	
+	
+	@JsonProperty("LeadId")
+	private String leadId;
+	
 	
 	@JsonProperty("VehChassisNo")
 	private String vehChassisNo;
-	
-	
 		
 }

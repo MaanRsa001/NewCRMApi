@@ -40,9 +40,9 @@ public class CrmLeadSaveReq {
 	@JsonProperty("PolicyTypeId")
 	private Integer policyTypeId;
 	
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	@JsonProperty("LeadGenDate")
-	private Date leadGenDate;
+//	@JsonFormat(pattern = "dd/MM/yyyy")
+//	@JsonProperty("LeadGenDate")
+	private String leadGenDate;
 		
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	@JsonProperty("DueDate")
@@ -89,7 +89,7 @@ public class CrmLeadSaveReq {
 	@JsonProperty("ReferenceName")
 	private String referenceName;
 	
-/*	@JsonProperty("AssigntoGroup")
+	@JsonProperty("AssigntoGroup")
 	private String assigntoGroup;
 	
 	@JsonProperty("AssigntoGroupId")
@@ -99,7 +99,7 @@ public class CrmLeadSaveReq {
 	private String assigntoUser;
 	
 	@JsonProperty("AssigntoUserId")
-	private Integer assigntoUserId; */
+	private Integer assigntoUserId; 
 	
 	@JsonProperty("Remarks")
 	private String remarks;

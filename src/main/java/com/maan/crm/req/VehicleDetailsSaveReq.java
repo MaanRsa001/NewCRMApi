@@ -151,6 +151,9 @@ public class VehicleDetailsSaveReq {
 	@JsonProperty("VehUserName")
 	private String vehUserName;
 	
+	@JsonProperty("LeadId")
+	private String leadId;
+	
 //	@JsonProperty("VehUserContact")
 //	private String vehUserContact;
 

@@ -209,25 +209,25 @@ public class CRMValidationServiceImpl implements CRMValidationService {
 			  "Client Ref Num", "Please Enter Client Ref Num")); }
 			  if (req.getCoverNoteNumber() == null || StringUtils.isBlank(req.getCoverNoteNumber())) {
 				errors.add(new Error("13", "Cover Note Number", "Please Enter Cover Note Number"));
-			}
-			*/if (req.getGenerationDate() == null || StringUtils.isBlank(req.getGenerationDate().toString())) {
-				errors.add(new Error("14", "Generation Date", "Please Enter Generation Date"));
-			}
-			else if (!req.getGenerationDate().toString().matches("([0-9]{2})/([0-9]{2})/([0-9]{4})")) {
-				errors.add(new Error("14", "Generation Date",
-						"Generation Date format should be dd/MM/yyyy only allowed . Example :- 15/12/2022"));
-			}
+			}*/
+//			if (req.getGenerationDate() == null || StringUtils.isBlank(req.getGenerationDate().toString())) {
+//				errors.add(new Error("14", "Generation Date", "Please Enter Generation Date"));
+//			}
+//			else if (!req.getGenerationDate().toString().matches("([0-9]{2})/([0-9]{2})/([0-9]{4})")) {
+//				errors.add(new Error("14", "Generation Date",
+//						"Generation Date format should be dd/MM/yyyy only allowed . Example :- 15/12/2022"));
+//			}
 			Date today = new Date();
-			if (req.getDueDate() == null || StringUtils.isBlank(req.getDueDate().toString())) {
-				errors.add(new Error("15", "Due Date", "Please Enter Due Date"));
-			}
-			 else if (!req.getDueDate().toString().matches("([0-9]{2})/([0-9]{2})/([0-9]{4})")) {
-					errors.add(new Error("15", "Due Date",
-							"Due Date format should be dd/MM/yyyy only allowed . Example :- 15/12/2022"));
-				}		
-				else if (req.getDueDate().before(today)) {
-					errors.add(new Error("15", "Due Date", "Please Enter Due Date as Future Date" ));
-				}
+//			if (req.getDueDate() == null || StringUtils.isBlank(req.getDueDate().toString())) {
+//				errors.add(new Error("15", "Due Date", "Please Enter Due Date"));
+//			}
+//			 else if (!req.getDueDate().toString().matches("([0-9]{2})/([0-9]{2})/([0-9]{4})")) {
+//					errors.add(new Error("15", "Due Date",
+//							"Due Date format should be dd/MM/yyyy only allowed . Example :- 15/12/2022"));
+//				}		
+//				else if (req.getDueDate().before(today)) {
+//					errors.add(new Error("15", "Due Date", "Please Enter Due Date as Future Date" ));
+//				}
 		/*	if (req.getLocation() == null || StringUtils.isBlank(req.getLocation())) {
 				errors.add(new Error("16", "Location", "Please Enter Location"));
 			}
