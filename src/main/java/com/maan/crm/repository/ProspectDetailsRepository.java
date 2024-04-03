@@ -36,12 +36,12 @@ public interface ProspectDetailsRepository  extends JpaRepository<ProspectDetail
 	
 	List<ProspectDetails> findAllByOrderByProspectidDesc();
 
-	List<ProspectDetails> findByProspectid(int prospectid);
+	List<ProspectDetails> findByProspectid(Integer prospectid);
 
 	List<ProspectDetails> findByProspectidIn(List<Integer> prospectIds);
 
 
-	ProspectDetails findByProspectidOrderByProspectidAsc(int prospectid);
+	ProspectDetails findByProspectidOrderByProspectidAsc(Integer prospectid);
 
 	Page<ProspectDetails> findByCreatedByOrderByEntryDateDesc(Pageable paging, String createdBy);
 

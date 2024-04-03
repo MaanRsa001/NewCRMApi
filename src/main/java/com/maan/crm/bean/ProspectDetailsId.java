@@ -24,9 +24,9 @@ public class ProspectDetailsId implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// --- ENTITY KEY ATTRIBUTES
-	private int prospectid;
+	private Integer prospectid;
 
-	//private int leadId;
+//	private String leadId;
 
 	private String clientRefNo;
 }

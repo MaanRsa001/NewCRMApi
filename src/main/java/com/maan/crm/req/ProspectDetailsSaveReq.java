@@ -75,7 +75,7 @@ public class ProspectDetailsSaveReq  implements Serializable {
 	@JsonProperty("Remarks")
 	private String remarks;
 	@JsonProperty("LeadId")
-	private Integer leadId;
+	private String leadId;
 	@JsonProperty("ProsStatusId")
 	private Integer prosStatusId;
 	@JsonProperty("ProsStatusDesc")

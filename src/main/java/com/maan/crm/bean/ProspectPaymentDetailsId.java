@@ -24,7 +24,7 @@ public class ProspectPaymentDetailsId implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// --- ENTITY KEY ATTRIBUTES
-	private int prospectId;
+	private Integer prospectId;
 
-	private int paymentDetailsId;
+	private Integer paymentDetailsId;
 }

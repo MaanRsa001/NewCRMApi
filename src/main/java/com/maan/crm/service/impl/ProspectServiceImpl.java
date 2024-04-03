@@ -189,19 +189,19 @@ public class ProspectServiceImpl implements ProspectService {
 			if (req.getPaymentCollectedDate() == null
 					|| StringUtils.isBlank(req.getPaymentCollectedDate().toString())) {
 				errors.add(new Error("03", "Payment Collected Date", "Please Enter Payment Collected Date"));
-			} else if (!req.getPaymentCollectedDate().toString().matches("([0-9]{2})/([0-9]{2})/([0-9]{4})")) {
-				errors.add(new Error("03", "Payment Collected Date",
-						"Payment Collected Date format should be dd/MM/yyyy only allowed . Example :- 15/12/2022"));
-			}
+			} //else if (!req.getPaymentCollectedDate().toString().matches("([0-9]{2})/([0-9]{2})/([0-9]{4})")) {
+//				errors.add(new Error("03", "Payment Collected Date",
+//						"Payment Collected Date format should be dd/MM/yyyy only allowed . Example :- 15/12/2022"));
+//			}
 
 			if (req.getPaymentDate() == null || StringUtils.isBlank(req.getPaymentDate().toString())) {
 				errors.add(new Error("04", "Payment Date", "Please Enter Payment Date"));
 			}
 
-			else if (!req.getPaymentDate().toString().matches("([0-9]{2})/([0-9]{2})/([0-9]{4})")) {
-				errors.add(new Error("04", "Payment Date",
-						"Payment Date format should be dd/MM/yyyy only allowed. Example :- 08/06/2022"));
-			}
+//			else if (!req.getPaymentDate().toString().matches("([0-9]{2})/([0-9]{2})/([0-9]{4})")) {
+//				errors.add(new Error("04", "Payment Date",
+//						"Payment Date format should be dd/MM/yyyy only allowed. Example :- 08/06/2022"));
+//			}
  
 			if (Integer.valueOf(req.getPaymentDetailsId()) == null
 					|| StringUtils.isBlank(Integer.toString(req.getPaymentDetailsId()))) {
@@ -224,7 +224,7 @@ public class ProspectServiceImpl implements ProspectService {
 			else if (req.getPaymentType().length() > 100) {
 				errors.add(new Error("07", "Prospect Type", "Please Enter Prospect Type within 100 Characters"));
 			}
-		*/	if (Integer.valueOf(req.getPaymentTypeId()) == null || StringUtils.isBlank(req.getPaymentTypeId())) {
+		*/	if (Integer.valueOf(req.getPaymentTypeId()) == null ) {
 				errors.add(new Error("08", "Payment Type Id", "Please Enter Payment Type Id"));
 			} 
 		/*	else if (!StringUtils.isNumeric(req.getPaymentTypeId())) {
@@ -491,7 +491,7 @@ public class ProspectServiceImpl implements ProspectService {
 			// id.setLeadId(req.getLeadId());
 			Integer prospectid=0;
 			ProspectDetails opt  = null ;
-			if(req.getProspectId() !=null && StringUtils.isNotBlank(req.getProspectId().toString())){
+			if(req.getProspectId() !=null && StringUtils.isNotBlank(req.getProspectId().toString()) && req.getProspectId() != 0){
 				opt = prospectdetailsrepositoryl.findByProspectidOrderByProspectidAsc(req.getProspectId());			
 			}
 			// Update
@@ -545,6 +545,7 @@ public class ProspectServiceImpl implements ProspectService {
 				treq.setCreatedBy(req.getCreatedBy());
 				treq.setBranchCode(clientdetails.getBranchCode());
 				treq.setEntryDate(new Date());
+				treq.setLeadId(req.getLeadId());
 				treq.setInsCompanyId(clientdetails.getInsCompanyId());
 				treq.setRegionCode(clientdetails.getRegionCode());
 				treq.setClientRefNo(req.getClientRefNo());
@@ -1164,6 +1165,7 @@ public class ProspectServiceImpl implements ProspectService {
 				res.setVehicleDetails(modelMapper.map(opt3.get(0), ProspectQuotationVehicleDetailsRes.class));
 			}
 
+			//Tracking_Details Tables -> Prospect_id,Lead_Id 
 			LeadDetails opt4 = leadRepo.findByLeadId(req.getProspectId().toString());
 			if (opt4!=null) {
 				ClientDetails clientData = clientrepo.findByClientRefNo(opt4.getClientRefNo());

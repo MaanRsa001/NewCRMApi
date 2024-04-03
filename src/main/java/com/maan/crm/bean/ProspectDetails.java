@@ -61,9 +61,9 @@ public class ProspectDetails implements Serializable {
 	@Column(name = "PROSPECTID", nullable = false)
 	private Integer prospectid;
 
-/*	@Id
-	@Column(name = "LEAD_ID", nullable = false)
-	private Integer leadId;*/
+//	@Id
+//	@Column(name = "LEAD_ID", nullable = false)
+//	private String leadId;
 
 	@Id
 	@Column(name = "CLIENT_REF_NO", nullable = false)

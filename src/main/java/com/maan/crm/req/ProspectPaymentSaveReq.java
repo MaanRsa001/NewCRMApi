@@ -17,14 +17,15 @@ import lombok.Setter;
 public class ProspectPaymentSaveReq {
 
 	@JsonProperty("PaymentDetailsId")
-	private int paymentDetailsId;
+	private Integer paymentDetailsId;
 	
-	
+	@JsonProperty("ProspectId")
+	private Integer     prospectId ;
 	@JsonProperty("PaymentType")
 	private String paymentType;
 
 	@JsonProperty("PaymentTypeId")
-	private String paymentTypeId;
+	private Integer paymentTypeId;
 		
 	@JsonProperty("PaymentRefNo")
 	private String paymentRefNo;
