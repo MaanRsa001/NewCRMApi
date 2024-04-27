@@ -36,7 +36,7 @@ public class OldPolicySaveReq {
 	private String oldDiscountPercent;
 	
 	@JsonProperty("OldCommisBasePremium")
-	private String oldCommisBasePremium;
+	private String oldComisBasePremium;
 	
 	@JsonProperty("OldOtherPremium")
 	private String oldOtherPremium;

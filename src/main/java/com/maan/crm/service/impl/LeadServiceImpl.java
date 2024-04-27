@@ -542,7 +542,8 @@ public class LeadServiceImpl implements LeadService {
 				if (oldData != null) {
 					oldPolicyRes = mapper.map(oldData, OldPolicySaveReq.class);
 				}
-			}else if(StringUtils.isNotBlank(req.getLeadId())) {
+			}
+			if(StringUtils.isNotBlank(req.getLeadId())) {
 				
 				VehicleDetailsGetReq vehicledetail = new VehicleDetailsGetReq();
 				vehicledetail.setLeadId(req.getLeadId());
@@ -586,9 +587,9 @@ public class LeadServiceImpl implements LeadService {
 //				}
 //			}
 
-			if (req.getOldCommisBasePremium() == null || StringUtils.isBlank(req.getOldCommisBasePremium())) {
+			if (req.getOldComisBasePremium() == null || StringUtils.isBlank(req.getOldComisBasePremium())) {
 				errors.add(new Error("02", "Old Commission Base Premium", "Please Enter Old Commission Base Premium"));
-			} else if (!req.getOldCommisBasePremium().matches("[0-9.]+")) {
+			} else if (!req.getOldComisBasePremium().matches("[0-9.]+")) {
 				errors.add(new Error("02", "Old Commission Premium",
 						"Please Enter Old Commission Premium in Correct Format"));
 			}
@@ -704,7 +705,7 @@ public class LeadServiceImpl implements LeadService {
 			entity.setEntryDate(entryDate);
 			entity.setOldExpiryDate(req.getOldExpiryDate());
 			entity.setOldStartDate(req.getOldStartDate());
-			entity.setOldComisBasePremium(Double.valueOf(req.getOldCommisBasePremium()));
+			entity.setOldComisBasePremium(Double.valueOf(req.getOldComisBasePremium()));
 			entity.setOldDiscountPercent(Integer.valueOf(req.getOldDiscountPercent()));
 			entity.setOldGst(Double.valueOf(req.getOldGst()));
 			entity.setOldnoClaimBonus(Double.valueOf(req.getOldnoClaimBonus()));
