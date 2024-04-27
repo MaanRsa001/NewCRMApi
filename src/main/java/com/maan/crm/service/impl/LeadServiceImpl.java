@@ -345,6 +345,9 @@ public class LeadServiceImpl implements LeadService {
 			id.setInsCompanyId(req.getInsCompanyId());
 			id.setLeadId(req.getLeadId());
 			ClientDetails clientName = clientrepo.findByClientRefNo(req.getClientRefNo());
+			if(clientName ==null) {
+				clientName = new ClientDetails();
+			}
 			Optional<LeadDetails> data1 = repository.findById(id);
 			if (data1.isPresent()) {
 				// Update
@@ -433,40 +436,42 @@ public class LeadServiceImpl implements LeadService {
 			 */
 			// Thread To Trigger Mail
 			ClientDetails clientDetails = clientrepo.findByClientRefNo(req.getClientRefNo());
-			clientDetails.setLastVisitedDate(new Date());
-			clientrepo.saveAndFlush(clientDetails);
-			InsuranceCompanyMaster companyData = insRepo.findByInsId(req.getInsCompanyId().toString());
-			ClaimLoginMaster loginData = loginRepo.findByLoginId(req.getCreatedBy());
+			if(clientDetails!=null ) {
+				clientDetails.setLastVisitedDate(new Date());
+				clientrepo.saveAndFlush(clientDetails);
+				InsuranceCompanyMaster companyData = insRepo.findByInsId(req.getInsCompanyId().toString());
+				ClaimLoginMaster loginData = loginRepo.findByLoginId(req.getCreatedBy());
 
-			List<String> ccMails = new ArrayList<String>();
-			ccMails.add(companyData.getInsEmail());
-			ccMails.add(loginData.getUserMail());
+				List<String> ccMails = new ArrayList<String>();
+				ccMails.add(companyData.getInsEmail());
+				ccMails.add(loginData.getUserMail());
 
-			List<String> toMails = new ArrayList<String>();
-			toMails.add(clientDetails.getEmailId());
+				List<String> toMails = new ArrayList<String>();
+				toMails.add(clientDetails.getEmailId());
 
-			Map<String, Object> keys = new HashMap<String, Object>();
-			keys.put("LEAD_ID", leadId == null ? "" : leadId.toString());
+				Map<String, Object> keys = new HashMap<String, Object>();
+				keys.put("LEAD_ID", leadId == null ? "" : leadId.toString());
 
-			// Set Mail Request
-			MailFramingReq mailFrameReq = new MailFramingReq();
-			mailFrameReq.setInsId(req.getInsCompanyId().toString());
-			mailFrameReq.setNotifTemplateId("LEAD_INFO");
-			mailFrameReq.setKeys(keys);
-			mailFrameReq.setMailCc(ccMails);
-			mailFrameReq.setMailTo(toMails);
-			mailFrameReq.setMailRegards(companyData.getRegards());
-			mailFrameReq.setStatus(res.getResponse());
+				// Set Mail Request
+				MailFramingReq mailFrameReq = new MailFramingReq();
+				mailFrameReq.setInsId(req.getInsCompanyId().toString());
+				mailFrameReq.setNotifTemplateId("LEAD_INFO");
+				mailFrameReq.setKeys(keys);
+				mailFrameReq.setMailCc(ccMails);
+				mailFrameReq.setMailTo(toMails);
+				mailFrameReq.setMailRegards(companyData.getRegards());
+				mailFrameReq.setStatus(res.getResponse());
 
-			log.info("{ Mail Pushed SuccessFully . LeadId is ---> " + leadId + " ; ClientRefNo is --->"
-					+ req.getClientRefNo() + " }");
-			// mailFrameService.sendSms(mailReq);
-			mailThreadService.threadToSendMail(mailFrameReq);
+				log.info("{ Mail Pushed SuccessFully . LeadId is ---> " + leadId + " ; ClientRefNo is --->"
+						+ req.getClientRefNo() + " }");
+				// mailFrameService.sendSms(mailReq);
+				mailThreadService.threadToSendMail(mailFrameReq);
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.info(e.getMessage());
-			return null;
+			return res;
 		}
 		return res;
 	}
