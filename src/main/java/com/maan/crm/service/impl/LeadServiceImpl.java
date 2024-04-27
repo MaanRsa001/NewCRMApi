@@ -1128,7 +1128,7 @@ public class LeadServiceImpl implements LeadService {
 					data.setAssigntoUser(StringUtils.isBlank(req.getChangeAssigntoUser()) ? data.getAssigntoUser()
 							: req.getChangeAssigntoUser());
 					data.setAssigntoUserId(StringUtils.isBlank(req.getChangeAssigntoUserId()) ? data.getAssigntoUserId()
-							: Integer.valueOf(req.getChangeAssigntoUserId()));
+							: req.getChangeAssigntoUserId());
 					data.setPos(StringUtils.isBlank(req.getChangePos()) ? data.getPos() : req.getChangePos());
 					data.setPosId(StringUtils.isBlank(req.getChangePosId()) ? data.getPosId()
 							: Integer.valueOf(req.getChangePosId()));

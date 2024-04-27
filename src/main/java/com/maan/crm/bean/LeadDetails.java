@@ -126,7 +126,7 @@ public class LeadDetails implements Serializable {
 	    private String assigntoUser ;
 
 	    @Column(name="ASSIGNTO_USER_ID")
-	    private Integer   assigntoUserId ;
+	    private String   assigntoUserId ;
 
 	    @Column(name="REMARKS", length = 100)
 	    private String remarks ;

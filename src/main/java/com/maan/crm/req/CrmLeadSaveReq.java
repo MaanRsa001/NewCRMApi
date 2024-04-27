@@ -93,13 +93,13 @@ public class CrmLeadSaveReq {
 	private String assigntoGroup;
 	
 	@JsonProperty("AssigntoGroupId")
-	private Integer assigntoGroupId;
+	private String assigntoGroupId;
 		
 	@JsonProperty("AssigntoUser")
 	private String assigntoUser;
 	
 	@JsonProperty("AssigntoUserId")
-	private Integer assigntoUserId; 
+	private String assigntoUserId; 
 	
 	@JsonProperty("Remarks")
 	private String remarks;
