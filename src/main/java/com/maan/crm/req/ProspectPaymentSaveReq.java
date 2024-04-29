@@ -20,7 +20,7 @@ public class ProspectPaymentSaveReq {
 	private Integer paymentDetailsId;
 	
 	@JsonProperty("ProspectId")
-	private Integer     prospectId ;
+	private String prospectId ;
 	@JsonProperty("PaymentType")
 	private String paymentType;
 

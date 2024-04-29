@@ -203,12 +203,12 @@ public class ProspectServiceImpl implements ProspectService {
 //						"Payment Date format should be dd/MM/yyyy only allowed. Example :- 08/06/2022"));
 //			}
  
-			if (Integer.valueOf(req.getPaymentDetailsId()) == null
-					|| StringUtils.isBlank(Integer.toString(req.getPaymentDetailsId()))) {
-				errors.add(new Error("05", "Payment Details Id", "Please Enter Payment Details Id"));
-			} else if (!StringUtils.isNumeric(Integer.toString(req.getPaymentDetailsId()))) {
-				errors.add(new Error("05", "Payment Details Id", "Please Enter Payment Details Id in numbers"));
-			}
+//			if (Integer.valueOf(req.getPaymentDetailsId()) == null
+//					|| StringUtils.isBlank(Integer.toString(req.getPaymentDetailsId()))) {
+//				errors.add(new Error("05", "Payment Details Id", "Please Enter Payment Details Id"));
+//			} else if (!StringUtils.isNumeric(Integer.toString(req.getPaymentDetailsId()))) {
+//				errors.add(new Error("05", "Payment Details Id", "Please Enter Payment Details Id in numbers"));
+//			}
 			if (req.getPaymentRefNo() == null || StringUtils.isBlank(req.getPaymentRefNo())) {
 				errors.add(new Error("06", "Payment Ref No", "Please Enter Payment Ref No"));
 			} else if (req.getPaymentRefNo().length() > 100) {
@@ -249,6 +249,12 @@ public class ProspectServiceImpl implements ProspectService {
 	@Override
 	public ProspectPaymentSuccessRes saveProspectPayment(LeadDetailsJsonTempReq tempReq ) {
 		ProspectPaymentSaveReq req = tempReq.getProspectPayment();
+		if(StringUtils.isNotBlank(req.getProspectId())) {
+			// Remove the first character "L"
+			// Convert the numeric string to an integer
+			String prospectId = req.getProspectId();
+			req.setProspectId(prospectId.substring(1));
+		}
 		ProspectPaymentSuccessRes res = new ProspectPaymentSuccessRes();
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");

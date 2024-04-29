@@ -101,4 +101,12 @@ public interface DropDownService {
 
 	List<DropDownRes> getMobileCodes();
 
+	List<DropDownResA> getPolicyStatusDropDown();
+
+	List<DropDownResA> getFileTypeDropDown();
+
+	List<DropDownResA> getrenewableFlagDropDown();
+
+	List<DropDownResA> getLIVDropDown(String itemType);
+
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maan.crm.req.BranchMasterDropdownReq;
@@ -926,6 +927,74 @@ public class DropDownController {
 	public ResponseEntity<CommonCrmRes> getBroughtDropDown(@RequestBody BroughtDropDownReq req){
 		CommonCrmRes data = new CommonCrmRes();
 		List<DropDownResA> res = dropDownService.getBroughtDropDown(req);
+		data.setCommonResponse(res);
+		data.setErrorMessage(Collections.emptyList());
+		data.setIsError(false);
+		data.setMessage("Success");
+		if(res!=null) {
+			return new ResponseEntity<CommonCrmRes>(data, HttpStatus.CREATED);
+		}
+		else {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/policystatus")
+	@ApiOperation(value="This method is to get policy status")
+	public ResponseEntity<CommonCrmRes> getPolicyStatusDropDown(){
+		CommonCrmRes data = new CommonCrmRes();
+		List<DropDownResA> res = dropDownService.getPolicyStatusDropDown();
+		data.setCommonResponse(res);
+		data.setErrorMessage(Collections.emptyList());
+		data.setIsError(false);
+		data.setMessage("Success");
+		if(res!=null) {
+			return new ResponseEntity<CommonCrmRes>(data, HttpStatus.CREATED);
+		}
+		else {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/filetype")
+	@ApiOperation(value="This method is to get file type")
+	public ResponseEntity<CommonCrmRes> getfileTypeDropDown(){
+		CommonCrmRes data = new CommonCrmRes();
+		List<DropDownResA> res = dropDownService.getFileTypeDropDown();
+		data.setCommonResponse(res);
+		data.setErrorMessage(Collections.emptyList());
+		data.setIsError(false);
+		data.setMessage("Success");
+		if(res!=null) {
+			return new ResponseEntity<CommonCrmRes>(data, HttpStatus.CREATED);
+		}
+		else {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/renewableflag")
+	@ApiOperation(value="This method is to get renewable flag")
+	public ResponseEntity<CommonCrmRes> getrenewableFlagDropDown(){
+		CommonCrmRes data = new CommonCrmRes();
+		List<DropDownResA> res = dropDownService.getrenewableFlagDropDown();
+		data.setCommonResponse(res);
+		data.setErrorMessage(Collections.emptyList());
+		data.setIsError(false);
+		data.setMessage("Success");
+		if(res!=null) {
+			return new ResponseEntity<CommonCrmRes>(data, HttpStatus.CREATED);
+		}
+		else {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/livdropdown")
+	@ApiOperation(value="This method is to list item value drop down ")
+	public ResponseEntity<CommonCrmRes> getLIVDropDown(@RequestParam("itemType") String itemType){
+		CommonCrmRes data = new CommonCrmRes();
+		List<DropDownResA> res = dropDownService.getLIVDropDown(itemType);
 		data.setCommonResponse(res);
 		data.setErrorMessage(Collections.emptyList());
 		data.setIsError(false);

@@ -63,7 +63,7 @@ public class InsuranceCompanyMasterServiceImpl implements InsuranceCompanyMaster
 	public List<DropDownRes> getInsCompMasterDropDown() {
 		List<DropDownRes> resList = new ArrayList<DropDownRes>();
 		try {
-			List<InsuranceCompanyMaster> getList = repo.findByInsIdAndStatusOrderByInsNameAsc("OMAN_COMPANY", "Y");
+			List<InsuranceCompanyMaster> getList = repo.findByInsIdAndStatusOrderByInsNameAsc("OMAN", "Y");
 
 			for (InsuranceCompanyMaster data : getList) {
 				DropDownRes res = new DropDownRes();

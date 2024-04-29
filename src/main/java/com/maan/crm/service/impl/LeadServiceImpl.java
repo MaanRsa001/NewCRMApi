@@ -336,11 +336,15 @@ public class LeadServiceImpl implements LeadService {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat dbf = new SimpleDateFormat("yyyy-MM-dd");
 		ModelMapper mapper = new ModelMapper();
-		String leadId = "";
+		String leadId = " ";
 		Date entryDate = null;
 		try {
+			String clientRefNo = "";
+			if(StringUtils.isNotBlank(req.getClientRefNo())) {
+				clientRefNo = req.getClientRefNo();
+			}
 			LeadDetailsId id = new LeadDetailsId();
-			id.setClientRefNo(req.getClientRefNo());
+			id.setClientRefNo(clientRefNo);
 			id.setCreatedBy(req.getCreatedBy());
 			id.setInsCompanyId(req.getInsCompanyId());
 			id.setLeadId(req.getLeadId());

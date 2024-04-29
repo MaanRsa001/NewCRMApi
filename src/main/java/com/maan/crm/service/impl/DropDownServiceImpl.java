@@ -1108,5 +1108,85 @@ public class DropDownServiceImpl implements DropDownService {
 		}
 		return resList;
 	}
+
+	@Override
+	public List<DropDownResA> getPolicyStatusDropDown() {
+		List<DropDownResA> resList = new ArrayList<DropDownResA>();
+		try {
+			List<CrmListITemValue> getList = listRepo.findByItemTypeAndStatusOrderByItemCodeAsc("POLICY_STATUS", "Y");
+
+			for (CrmListITemValue data : getList) {
+				DropDownResA res = new DropDownResA();
+				res.setCode(data.getItemCode());
+				res.setCodeDesc(data.getItemValue());
+				resList.add(res);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info("Exception is ---> " + e.getMessage());
+			return null;
+		}
+		return resList;
+	}
+
+	@Override
+	public List<DropDownResA> getFileTypeDropDown() {
+		List<DropDownResA> resList = new ArrayList<DropDownResA>();
+		try {
+			List<CrmListITemValue> getList = listRepo.findByItemTypeAndStatusOrderByItemCodeAsc("FILE_TYPE", "Y");
+
+			for (CrmListITemValue data : getList) {
+				DropDownResA res = new DropDownResA();
+				res.setCode(data.getItemCode());
+				res.setCodeDesc(data.getItemValue());
+				resList.add(res);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info("Exception is ---> " + e.getMessage());
+			return null;
+		}
+		return resList;
+	}
+
+	@Override
+	public List<DropDownResA> getrenewableFlagDropDown() {
+		List<DropDownResA> resList = new ArrayList<DropDownResA>();
+		try {
+			List<CrmListITemValue> getList = listRepo.findByItemTypeAndStatusOrderByItemCodeAsc("RENEWABLE_FLAG", "Y");
+
+			for (CrmListITemValue data : getList) {
+				DropDownResA res = new DropDownResA();
+				res.setCode(data.getItemCode());
+				res.setCodeDesc(data.getItemValue());
+				resList.add(res);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info("Exception is ---> " + e.getMessage());
+			return null;
+		}
+		return resList;
+	}
+
+	@Override
+	public List<DropDownResA> getLIVDropDown(String itemType) {
+		List<DropDownResA> resList = new ArrayList<DropDownResA>();
+		try {
+			List<CrmListITemValue> getList = listRepo.findByItemTypeAndStatusOrderByItemCodeAsc(itemType, "Y");
+
+			for (CrmListITemValue data : getList) {
+				DropDownResA res = new DropDownResA();
+				res.setCode(data.getItemCode());
+				res.setCodeDesc(data.getItemValue());
+				resList.add(res);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info("Exception is ---> " + e.getMessage());
+			return null;
+		}
+		return resList;
+	}
 	
 }
