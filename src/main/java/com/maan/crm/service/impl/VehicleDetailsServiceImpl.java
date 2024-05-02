@@ -254,7 +254,10 @@ public class VehicleDetailsServiceImpl implements VehicleDetailsService {
 		try {
 			String leadId = req.getLeadId();
 			VehicleDetails data = vehiclerepo.findByLeadId(leadId);
-
+			
+			if(data==null) {
+				data = new VehicleDetails();
+			}
 			res = mapper.map(data, VehicleDetailsRes.class);
 
 		} catch (Exception e) {

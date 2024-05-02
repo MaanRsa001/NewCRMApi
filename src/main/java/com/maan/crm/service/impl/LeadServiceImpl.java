@@ -190,133 +190,144 @@ public class LeadServiceImpl implements LeadService {
 		CrmLeadSaveReq req = tempReq.getLeadDetails();
 		List<Error> errors = new ArrayList<Error>();
 		try {
-			/*
-			 * if (StringUtils.isNotBlank(req.getLeadId().toString())) { if
-			 * (!StringUtils.isNumeric(req.getLeadId().toString())) { errors.add(new
-			 * Error("01", "Lead Id", "Please Enter Valid Lead Id ")); } } if
-			 * (req.getClientRefNo() == null || StringUtils.isBlank(req.getClientRefNo())) {
-			 * errors.add(new Error("02", "Client Ref No", "Please Enter Client Ref No")); }
-			 * else if (req.getClientRefNo().length() > 50) { errors.add(new Error("02",
-			 * "Client Ref No", "Please Enter Client Ref No within 50 Characters")); } if
-			 * (req.getBusinessType() == null || StringUtils.isBlank(req.getBusinessType()))
-			 * { errors.add(new Error("03", "Business Type", "Please Enter Business Type"));
-			 * } else if (req.getBusinessType().length() > 100) { errors.add(new Error("03",
-			 * "Business Type", "Please Enter Business Type within 100 Characters")); } if
-			 * (req.getBusinessTypeId() == null ||
-			 * StringUtils.isBlank(req.getBusinessTypeId().toString())) { errors.add(new
-			 * Error("04", "Business Type Id", "Please Enter Business Type Id")); } if
-			 * (req.getAssigntoGroup() == null ||
-			 * StringUtils.isBlank(req.getAssigntoGroup())) { errors.add(new Error("05",
-			 * "Assign To Group", "Please Enter Assign to Group")); } else if
-			 * (req.getAssigntoGroup().length() > 100) { errors.add(new Error("05",
-			 * "Assign to Group", "Please Enter Assign to Group within 100 Characters")); }
-			 * if (req.getAssigntoGroupId() == null ||
-			 * StringUtils.isBlank(req.getAssigntoGroupId().toString())) { errors.add(new
-			 * Error("06", "Assign To Group Id", "Please Enter Assign To Group Id")); } else
-			 * if (!StringUtils.isNumeric(req.getAssigntoGroupId().toString())) {
-			 * errors.add(new Error("06", "Assign To Group Id",
-			 * "Please Enter Assign To Group Id in numbers")); }
-			 * 
-			 * if (req.getAssigntoUser() == null ||
-			 * StringUtils.isBlank(req.getAssigntoUser())) { errors.add(new Error("07",
-			 * "Assign To User", "Please Enter Assign to User")); } else if
-			 * (req.getAssigntoUser().length() > 100) { errors.add(new Error("07",
-			 * "Assign to User", "Please Enter Assign to User within 100 Characters")); } if
-			 * (req.getAssigntoUserId() == null ||
-			 * StringUtils.isBlank(req.getAssigntoUserId().toString())) { errors.add(new
-			 * Error("08", "Assign To User Id", "Please Enter Assign To User Id")); } else
-			 * if (!StringUtils.isNumeric(req.getAssigntoUserId().toString())) {
-			 * errors.add(new Error("08", "Assign To User Id",
-			 * "Please Enter Assign To User Id in numbers")); } if (req.getBrokenPolicy() ==
-			 * null || StringUtils.isBlank(req.getBrokenPolicy())) { errors.add(new
-			 * Error("09", "Broken Policy", "Please Enter Broken Policy")); } else if
-			 * (req.getBrokenPolicy().length() > 100) { errors.add(new Error("09",
-			 * "Broken Policy", "Please Enter Broken Policy within 100 Characters")); } if
-			 * (req.getClassDesc() == null || StringUtils.isBlank(req.getClassDesc())) {
-			 * errors.add(new Error("10", "Class Desc", "Please Enter Class Desc")); } else
-			 * if (req.getClassDesc().length() > 100) { errors.add(new Error("10",
-			 * "Class Desc", "Please Enter Class Desc within 100 Characters")); } if
-			 * (req.getClassId() == null ||
-			 * StringUtils.isBlank(req.getClassId().toString())) { errors.add(new
-			 * Error("11", "Class Id", "Please Enter Class Id")); } else if
-			 * (!StringUtils.isNumeric(req.getClassId().toString())) { errors.add(new
-			 * Error("12", "Class Id", "Please Enter Class Id in numbers")); } if
-			 * (req.getClassification() == null ||
-			 * StringUtils.isBlank(req.getClassification())) { errors.add(new Error("12",
-			 * "Classification", "Please Enter Classification")); } else if
-			 * (req.getClassification().length() > 100) { errors.add(new Error("12",
-			 * "Classification", "Please Enter Classification within 100 Characters")); }
-			 * 
-			 * if (req.getClassificationId() == null ||
-			 * StringUtils.isBlank(req.getClassificationId().toString())) { errors.add(new
-			 * Error("13", "Classification Id", "Please Enter Classification Id")); } else
-			 * if (!StringUtils.isNumeric(req.getClassificationId().toString())) {
-			 * errors.add(new Error("13", "Classification Id",
-			 * "Please Classification Id in numbers")); } Date today = new Date(); if
-			 * (req.getDueDate() == null ||
-			 * StringUtils.isBlank(req.getDueDate().toString())) { errors.add(new
-			 * Error("14", "Due Date", "Please Enter Due Date")); } else if
-			 * (!req.getDueDate().toString().matches("([0-9]{2})/([0-9]{2})/([0-9]{4})")) {
-			 * errors.add(new Error("14", "Due Date",
-			 * "Due Date format should be dd/MM/yyyy only allowed . Example :- 15/12/2022"))
-			 * ; } else if (req.getDueDate().before(today)) { errors.add(new Error("14",
-			 * "Due Date", "Please Enter Due Date as Future Date" )); } if
-			 * (req.getLeadGenDate() == null ||
-			 * StringUtils.isBlank(req.getLeadGenDate().toString())) { errors.add(new
-			 * Error("15", "Lead Gen Date", "Please Enter Lead Gen Date")); } else if
-			 * (!req.getLeadGenDate().toString().matches("([0-9]{2})/([0-9]{2})/([0-9]{4})")
-			 * ) { errors.add(new Error("15", "Lead Gen Date",
-			 * "Lead Gen Date format should be dd/MM/yyyy only allowed . Example :- 15/12/2022"
-			 * )); } if (req.getOthertype() == null ||
-			 * StringUtils.isBlank(req.getOthertype())) { errors.add(new Error("16",
-			 * "Other Type", "Please Enter Other Type")); } else if
-			 * (req.getOthertype().length() > 100) { errors.add(new Error("16",
-			 * "Other Type", "Please Enter Other Type within 100 Characters")); } if
-			 * (req.getOthertypeId() == null ||
-			 * StringUtils.isBlank(req.getOthertypeId().toString())) { errors.add(new
-			 * Error("17", "Other Type Id", "Please Enter Other Type Id")); } if
-			 * (req.getPolicyType() == null || StringUtils.isBlank(req.getPolicyType())) {
-			 * errors.add(new Error("18", "Policy Type", "Please Enter Policy Type")); }
-			 * else if (req.getPolicyType().length() > 100) { errors.add(new Error("18",
-			 * "Policy Type", "Please Enter Policy Type within 100 Characters")); } if
-			 * (req.getPolicyTypeId() == null ||
-			 * StringUtils.isBlank(req.getPolicyTypeId().toString())) { errors.add(new
-			 * Error("19", "Policy Type Id", "Please Enter Policy Type Id")); } else if
-			 * (!StringUtils.isNumeric(req.getPolicyTypeId().toString())) { errors.add(new
-			 * Error("19", "Policy Type Id", "Please Enter Policy  Type Id in numbers")); }
-			 * if (req.getPos() == null || StringUtils.isBlank(req.getPos())) {
-			 * errors.add(new Error("20", "POS", "Please Enter POS")); } else if
-			 * (req.getPos().length() > 100) { errors.add(new Error("20", "POS",
-			 * "Please Enter POS within 100 Characters")); } if (req.getPosId() == null ||
-			 * StringUtils.isBlank(req.getPosId().toString())) { errors.add(new Error("21",
-			 * "POS Id", "Please Enter POS Id")); } else if
-			 * (!StringUtils.isNumeric(req.getPosId().toString())) { errors.add(new
-			 * Error("21", "Assign To POS Id", "Please Enter Assign To POS Id in numbers"));
-			 * } if (req.getReferenceName() == null ||
-			 * StringUtils.isBlank(req.getReferenceName())) { errors.add(new Error("22",
-			 * "Reference Name", "Please Enter Reference Name")); } else if
-			 * (req.getReferenceName().length() > 100) { errors.add(new Error("22",
-			 * "Reference Name", "Please Enter Reference Name within 100 Characters")); } if
-			 * (req.getReferredby() == null || StringUtils.isBlank(req.getReferredby())) {
-			 * errors.add(new Error("23", "ReferredBy", "Please Enter Referred By")); } else
-			 * if (req.getReferredby().length() > 100) { errors.add(new Error("23",
-			 * "ReferredBy", "Please Enter ReferredBy within 100 Characters")); } if
-			 * (req.getReferredbyId() == null || StringUtils.isBlank(req.getReferredbyId()))
-			 * { errors.add(new Error("24", "Referred By Id",
-			 * "Please Enter Referred By Id")); } else if
-			 * (!StringUtils.isNumeric(req.getReferredbyId())) { errors.add(new Error("24",
-			 * "Referred By Id", "Please Enter Referred By Id in numbers")); } if
-			 * (req.getRemarks().length() > 100) { errors.add(new Error("25", "Remarks",
-			 * "Please Enter Remarks  within 100 Characters")); } if (req.getSource() ==
-			 * null || StringUtils.isBlank(req.getSource())) { errors.add(new Error("26",
-			 * "Source", "Please Enter Source")); } else if (req.getSource().length() > 100)
-			 * { errors.add(new Error("26", "Source",
-			 * "Please Enter Source within 100 Characters")); } if (req.getSourceId() ==
-			 * null || StringUtils.isBlank(req.getSourceId().toString())) { errors.add(new
-			 * Error("27", "Source Id", "Please Enter Source Id")); } else if
-			 * (!StringUtils.isNumeric(req.getSourceId().toString())) { errors.add(new
-			 * Error("27", "Source Id", "Please Enter Source Id in numbers")); }
-			 */
+			
+//			if (StringUtils.isNotBlank(req.getLeadId().toString())) {
+//				if (!StringUtils.isNumeric(req.getLeadId().toString())) {
+//					errors.add(new Error("01", "Lead Id", "Please Enter Valid Lead Id "));
+//				}
+//			}
+			if (req.getClientRefNo() == null || StringUtils.isBlank(req.getClientRefNo())) {
+				errors.add(new Error("02", "Client Ref No", "Please Enter Client Ref No"));
+			} else if (req.getClientRefNo().length() > 50) {
+				errors.add(new Error("02", "Client Ref No", "Please Enter Client Ref No within 50 Characters"));
+			}
+//			if (req.getBusinessType() == null || StringUtils.isBlank(req.getBusinessType())) {
+//				errors.add(new Error("03", "Business Type", "Please Enter Business Type"));
+//			} else if (req.getBusinessType().length() > 100) {
+//				errors.add(new Error("03", "Business Type", "Please Enter Business Type within 100 Characters"));
+//			}
+//			if (req.getBusinessTypeId() == null || StringUtils.isBlank(req.getBusinessTypeId().toString())) {
+//				errors.add(new Error("04", "Business Type Id", "Please Enter Business Type Id"));
+//			}
+//			if (req.getAssigntoGroup() == null || StringUtils.isBlank(req.getAssigntoGroup())) {
+//				errors.add(new Error("05", "Assign To Group", "Please Enter Assign to Group"));
+//			} else if (req.getAssigntoGroup().length() > 100) {
+//				errors.add(new Error("05", "Assign to Group", "Please Enter Assign to Group within 100 Characters"));
+//			}
+//			if (req.getAssigntoGroupId() == null || StringUtils.isBlank(req.getAssigntoGroupId().toString())) {
+//				errors.add(new Error("06", "Assign To Group Id", "Please Enter Assign To Group Id"));
+//			} else if (!StringUtils.isNumeric(req.getAssigntoGroupId().toString())) {
+//				errors.add(new Error("06", "Assign To Group Id", "Please Enter Assign To Group Id in numbers"));
+//			}
+//
+//			if (req.getAssigntoUser() == null || StringUtils.isBlank(req.getAssigntoUser())) {
+//				errors.add(new Error("07", "Assign To User", "Please Enter Assign to User"));
+//			} else if (req.getAssigntoUser().length() > 100) {
+//				errors.add(new Error("07", "Assign to User", "Please Enter Assign to User within 100 Characters"));
+//			}
+//			if (req.getAssigntoUserId() == null || StringUtils.isBlank(req.getAssigntoUserId().toString())) {
+//				errors.add(new Error("08", "Assign To User Id", "Please Enter Assign To User Id"));
+//			} else if (!StringUtils.isNumeric(req.getAssigntoUserId().toString())) {
+//				errors.add(new Error("08", "Assign To User Id", "Please Enter Assign To User Id in numbers"));
+//			}
+//			if (req.getBrokenPolicy() == null || StringUtils.isBlank(req.getBrokenPolicy())) {
+//				errors.add(new Error("09", "Broken Policy", "Please Enter Broken Policy"));
+//			} else if (req.getBrokenPolicy().length() > 100) {
+//				errors.add(new Error("09", "Broken Policy", "Please Enter Broken Policy within 100 Characters"));
+//			}
+//			if (req.getClassDesc() == null || StringUtils.isBlank(req.getClassDesc())) {
+//				errors.add(new Error("10", "Class Desc", "Please Enter Class Desc"));
+//			} else if (req.getClassDesc().length() > 100) {
+//				errors.add(new Error("10", "Class Desc", "Please Enter Class Desc within 100 Characters"));
+//			}
+//			if (req.getClassId() == null || StringUtils.isBlank(req.getClassId().toString())) {
+//				errors.add(new Error("11", "Class Id", "Please Enter Class Id"));
+//			} else if (!StringUtils.isNumeric(req.getClassId().toString())) {
+//				errors.add(new Error("12", "Class Id", "Please Enter Class Id in numbers"));
+//			}
+//			if (req.getClassification() == null || StringUtils.isBlank(req.getClassification())) {
+//				errors.add(new Error("12", "Classification", "Please Enter Classification"));
+//			} else if (req.getClassification().length() > 100) {
+//				errors.add(new Error("12", "Classification", "Please Enter Classification within 100 Characters"));
+//			}
+//
+//			if (req.getClassificationId() == null || StringUtils.isBlank(req.getClassificationId().toString())) {
+//				errors.add(new Error("13", "Classification Id", "Please Enter Classification Id"));
+//			} else if (!StringUtils.isNumeric(req.getClassificationId().toString())) {
+//				errors.add(new Error("13", "Classification Id", "Please Classification Id in numbers"));
+//			}
+//			Date today = new Date();
+//			if (req.getDueDate() == null || StringUtils.isBlank(req.getDueDate().toString())) {
+//				errors.add(new Error("14", "Due Date", "Please Enter Due Date"));
+//			} else if (!req.getDueDate().toString().matches("([0-9]{2})/([0-9]{2})/([0-9]{4})")) {
+//				errors.add(new Error("14", "Due Date",
+//						"Due Date format should be dd/MM/yyyy only allowed . Example :- 15/12/2022"));
+//			} else if (req.getDueDate().before(today)) {
+//				errors.add(new Error("14", "Due Date", "Please Enter Due Date as Future Date"));
+//			}
+//			if (req.getLeadGenDate() == null || StringUtils.isBlank(req.getLeadGenDate().toString())) {
+//				errors.add(new Error("15", "Lead Gen Date", "Please Enter Lead Gen Date"));
+//			} else if (!req.getLeadGenDate().toString().matches("([0-9]{2})/([0-9]{2})/([0-9]{4})")) {
+//				errors.add(new Error("15", "Lead Gen Date",
+//						"Lead Gen Date format should be dd/MM/yyyy only allowed . Example :- 15/12/2022"));
+//			}
+//			if (req.getOthertype() == null || StringUtils.isBlank(req.getOthertype())) {
+//				errors.add(new Error("16", "Other Type", "Please Enter Other Type"));
+//			} else if (req.getOthertype().length() > 100) {
+//				errors.add(new Error("16", "Other Type", "Please Enter Other Type within 100 Characters"));
+//			}
+//			if (req.getOthertypeId() == null || StringUtils.isBlank(req.getOthertypeId().toString())) {
+//				errors.add(new Error("17", "Other Type Id", "Please Enter Other Type Id"));
+//			}
+//			if (req.getPolicyType() == null || StringUtils.isBlank(req.getPolicyType())) {
+//				errors.add(new Error("18", "Policy Type", "Please Enter Policy Type"));
+//			} else if (req.getPolicyType().length() > 100) {
+//				errors.add(new Error("18", "Policy Type", "Please Enter Policy Type within 100 Characters"));
+//			}
+//			if (req.getPolicyTypeId() == null || StringUtils.isBlank(req.getPolicyTypeId().toString())) {
+//				errors.add(new Error("19", "Policy Type Id", "Please Enter Policy Type Id"));
+//			} else if (!StringUtils.isNumeric(req.getPolicyTypeId().toString())) {
+//				errors.add(new Error("19", "Policy Type Id", "Please Enter Policy  Type Id in numbers"));
+//			}
+//			if (req.getPos() == null || StringUtils.isBlank(req.getPos())) {
+//				errors.add(new Error("20", "POS", "Please Enter POS"));
+//			} else if (req.getPos().length() > 100) {
+//				errors.add(new Error("20", "POS", "Please Enter POS within 100 Characters"));
+//			}
+//			if (req.getPosId() == null || StringUtils.isBlank(req.getPosId().toString())) {
+//				errors.add(new Error("21", "POS Id", "Please Enter POS Id"));
+//			} else if (!StringUtils.isNumeric(req.getPosId().toString())) {
+//				errors.add(new Error("21", "Assign To POS Id", "Please Enter Assign To POS Id in numbers"));
+//			}
+//			if (req.getReferenceName() == null || StringUtils.isBlank(req.getReferenceName())) {
+//				errors.add(new Error("22", "Reference Name", "Please Enter Reference Name"));
+//			} else if (req.getReferenceName().length() > 100) {
+//				errors.add(new Error("22", "Reference Name", "Please Enter Reference Name within 100 Characters"));
+//			}
+//			if (req.getReferredby() == null || StringUtils.isBlank(req.getReferredby())) {
+//				errors.add(new Error("23", "ReferredBy", "Please Enter Referred By"));
+//			} else if (req.getReferredby().length() > 100) {
+//				errors.add(new Error("23", "ReferredBy", "Please Enter ReferredBy within 100 Characters"));
+//			}
+//			if (req.getReferredbyId() == null || StringUtils.isBlank(req.getReferredbyId())) {
+//				errors.add(new Error("24", "Referred By Id", "Please Enter Referred By Id"));
+//			} else if (!StringUtils.isNumeric(req.getReferredbyId())) {
+//				errors.add(new Error("24", "Referred By Id", "Please Enter Referred By Id in numbers"));
+//			}
+//			if (req.getRemarks().length() > 100) {
+//				errors.add(new Error("25", "Remarks", "Please Enter Remarks  within 100 Characters"));
+//			}
+//			if (req.getSource() == null || StringUtils.isBlank(req.getSource())) {
+//				errors.add(new Error("26", "Source", "Please Enter Source"));
+//			} else if (req.getSource().length() > 100) {
+//				errors.add(new Error("26", "Source", "Please Enter Source within 100 Characters"));
+//			}
+//			if (req.getSourceId() == null || StringUtils.isBlank(req.getSourceId().toString())) {
+//				errors.add(new Error("27", "Source Id", "Please Enter Source Id"));
+//			} else if (!StringUtils.isNumeric(req.getSourceId().toString())) {
+//				errors.add(new Error("27", "Source Id", "Please Enter Source Id in numbers"));
+//			}
+			 
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.info("Exception is --->" + e.getMessage());
@@ -339,7 +350,7 @@ public class LeadServiceImpl implements LeadService {
 		String leadId = " ";
 		Date entryDate = null;
 		try {
-			String clientRefNo = "";
+			String clientRefNo = " ";
 			if(StringUtils.isNotBlank(req.getClientRefNo())) {
 				clientRefNo = req.getClientRefNo();
 			}
@@ -359,7 +370,7 @@ public class LeadServiceImpl implements LeadService {
 				ent.setStatus(data1.get().getStatus());
 				ent.setLeadId(req.getLeadId());
 				ent.setEntryDate(data1.get().getEntryDate());
-				ent.setClientRefNo(req.getClientRefNo());
+				ent.setClientRefNo(clientRefNo);
 				ent.setInsCompanyId(req.getInsCompanyId());
 				ent.setLeadId(req.getLeadId());
 				ent.setClientName(clientName.getClientName());
@@ -380,7 +391,7 @@ public class LeadServiceImpl implements LeadService {
 				treq.setEntryDate(entryDate);
 				treq.setInsCompanyId(req.getInsCompanyId());
 				treq.setRegionCode(req.getRegionCode());
-				treq.setClientRefNo(req.getClientRefNo());
+				treq.setClientRefNo(clientRefNo);
 				treq.setClientName(clientName.getClientName());
 				treq.setLeadId(leadId);
 				treq.setStatus("Lead");
@@ -403,6 +414,7 @@ public class LeadServiceImpl implements LeadService {
 				ent.setUpdatedDate(new Date());
 				ent.setUpdatedBy(req.getCreatedBy());
 				ent.setUpdaterUsertype(req.getUserType());
+				ent.setClientRefNo(clientRefNo);
 				repository.saveAndFlush(ent);
 				res.setResponse("Inserted Successfully ");
 				res.setLeadid(leadId);
@@ -416,7 +428,7 @@ public class LeadServiceImpl implements LeadService {
 				treq.setEntryDate(entryDate);
 				treq.setInsCompanyId(req.getInsCompanyId());
 				treq.setRegionCode(req.getRegionCode());
-				treq.setClientRefNo(req.getClientRefNo());
+				treq.setClientRefNo(clientRefNo);
 				treq.setClientName(clientName.getClientName());
 				treq.setLeadId(leadId);
 				treq.setStatus("Lead");
@@ -439,7 +451,7 @@ public class LeadServiceImpl implements LeadService {
 			 * //trackRepo.save(saveTracking);
 			 */
 			// Thread To Trigger Mail
-			ClientDetails clientDetails = clientrepo.findByClientRefNo(req.getClientRefNo());
+			ClientDetails clientDetails = clientrepo.findByClientRefNo(clientRefNo);
 			if(clientDetails!=null ) {
 				clientDetails.setLastVisitedDate(new Date());
 				clientrepo.saveAndFlush(clientDetails);
@@ -526,6 +538,9 @@ public class LeadServiceImpl implements LeadService {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			LeadDetails data = repository.findByLeadId(req.getLeadId());
 			ClientDetails clientdetail = clientrepo.findByClientRefNo(data.getClientRefNo());
+			if(clientdetail==null) {
+				clientdetail = new ClientDetails();
+			}
 			mapper.getConfiguration().setAmbiguityIgnored(true);
 			mapper.map(data, leadRes);
 

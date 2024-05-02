@@ -32,7 +32,7 @@ public class FollowUpDetailsRes implements Serializable {
 	private String loginid;
 
 	@JsonProperty("Followupapplicableid")
-	private Integer followupapplicableid;
+	private String followupapplicableid;
 
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	@JsonProperty("Nextfollowupdate")
