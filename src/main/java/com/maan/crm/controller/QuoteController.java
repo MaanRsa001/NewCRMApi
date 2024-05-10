@@ -16,6 +16,7 @@ import com.maan.crm.req.EnquiryGridReq;
 import com.maan.crm.req.EnquiryListReq;
 import com.maan.crm.req.GetbyEnquiryQuoteReq;
 import com.maan.crm.req.LeadSearchReq;
+import com.maan.crm.req.QuotationDetailsSaveReq;
 import com.maan.crm.req.QuoteGetAllReq;
 import com.maan.crm.req.QuoteGetReq;
 import com.maan.crm.req.QuoteListReq;
@@ -27,7 +28,10 @@ import com.maan.crm.res.QuoteGetRes;
 import com.maan.crm.res.QuoteGridRes;
 import com.maan.crm.res.QuotePageRes;
 import com.maan.crm.res.QuoteSearchCountRes;
+import com.maan.crm.res.SuccessRes;
+import com.maan.crm.service.PrintReqService;
 import com.maan.crm.service.QuoteService;
+import com.maan.crm.util.error.Error;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,6 +43,9 @@ public class QuoteController {
 
 	@Autowired
 	private QuoteService service;
+	
+	@Autowired
+	private PrintReqService reqPrinter;
 
 	@PostMapping("/getall")
 	@ApiOperation(value = "This method is to quote details")
@@ -129,5 +136,33 @@ public class QuoteController {
 			else {
 				return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 			}
+	}
+	
+	@PostMapping("/savequotation")
+	@ApiOperation(value="This method is to save quotation details")
+	public ResponseEntity<CommonCrmRes> saveQuotationDetails(@RequestBody QuotationDetailsSaveReq req){
+		reqPrinter.reqPrint(req);
+		CommonCrmRes data = new CommonCrmRes();
+		List<Error> validation = service.validateQuotationDetails(req);
+		if (validation != null && validation.size() != 0) {
+			data.setCommonResponse(null);
+			data.setIsError(true);
+			data.setErrorMessage(validation);
+			data.setMessage("Failed");
+			return new ResponseEntity<CommonCrmRes>(data, HttpStatus.OK);
+
+		} else {
+			/////// save
+			SuccessRes res = service.saveQuotationDetails(req);
+			data.setCommonResponse(res);
+			data.setIsError(false);
+			data.setErrorMessage(Collections.emptyList());
+			data.setMessage("Success");
+			if (res != null) {
+				return new ResponseEntity<CommonCrmRes>(data, HttpStatus.CREATED);
+			} else {
+				return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			}
+		}
 	}
 }

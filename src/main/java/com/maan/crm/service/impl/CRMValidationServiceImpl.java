@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.maan.crm.bean.ClientAddressDetails;
+import com.maan.crm.bean.ClientDetails;
 import com.maan.crm.controller.DashBoardCardsDataCountReq;
 import com.maan.crm.repository.ClientAddressDetailsRepository;
 import com.maan.crm.repository.ClientDetailsRepository;
@@ -78,7 +79,15 @@ public class CRMValidationServiceImpl implements CRMValidationService {
 		Pattern pattern = Pattern.compile(regex);
 
 		try {
-
+			if(StringUtils.isBlank(req.getCrno()) ||!StringUtils.isNumeric(req.getCrno())){
+				errors.add(new Error("14", "Pan", "Please Enter A Valid PAN Number"));
+			}else if(StringUtils.isNotBlank(req.getCrno())) {
+				List<ClientDetails> byCrno = clientRepo.findByCrno(req.getCrno());
+				if(byCrno!=null && byCrno.size()>0) {
+					errors.add(new Error("14", "Pan", "The PAN Number Is Already Used"));
+				}
+				
+			}
 			if (req.getClientTypeId() == null || StringUtils.isBlank(req.getClientTypeId())) {
 				errors.add(new Error("01", "Client Type Id", "Please Enter Client Type Id"));
 			}
@@ -91,6 +100,11 @@ public class CRMValidationServiceImpl implements CRMValidationService {
 				errors.add(new Error("07", "Mobile Number", "Mobile Number format should be Only Numbers"));
 			} else if (req.getMobileNumber().length()>10  ) {
 				errors.add(new Error("07", "Mobile Number", "Mobile Number should be 10 digit  Only Allowd"));
+			} else {
+				List<ClientDetails> byCrno = clientRepo.findByMobileNumber(req.getMobileNumber());
+				if(byCrno!=null && byCrno.size()>0) {
+					errors.add(new Error("07", "Mobile Number", "Mobile Number Is Already Used"));
+				}
 			}
 			
 			if (req.getEmailId() == null || StringUtils.isBlank(req.getEmailId()))
@@ -203,13 +217,16 @@ public class CRMValidationServiceImpl implements CRMValidationService {
 			if (req.getClientRefNo() == null || StringUtils.isBlank(req.getClientRefNo())) {
 				errors.add(new Error("11", "Client Ref No", "Please Enter Client Ref No"));
 			}
-			/*
-			  if (req.getClientRefNum() == null ||
-			  StringUtils.isBlank(req.getClientRefNum())) { errors.add(new Error("12",
-			  "Client Ref Num", "Please Enter Client Ref Num")); }
-			  if (req.getCoverNoteNumber() == null || StringUtils.isBlank(req.getCoverNoteNumber())) {
-				errors.add(new Error("13", "Cover Note Number", "Please Enter Cover Note Number"));
-			}*/
+			
+			if (StringUtils.isBlank(req.getClientRefNo())) {
+				errors.add(new Error("12", "Client Ref Num", "Please Enter Client Ref Num"));
+			}
+			if (StringUtils.isBlank(req.getLeadId())) {
+				errors.add(new Error("13", "Lead Id", "Please Enter Lead Id"));
+			}
+//		    if (req.getCoverNoteNumber() == null || StringUtils.isBlank(req.getCoverNoteNumber())) {
+//				errors.add(new Error("13", "Cover Note Number", "Please Enter Cover Note Number"));
+//			}
 //			if (req.getGenerationDate() == null || StringUtils.isBlank(req.getGenerationDate().toString())) {
 //				errors.add(new Error("14", "Generation Date", "Please Enter Generation Date"));
 //			}

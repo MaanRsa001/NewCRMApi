@@ -1,6 +1,7 @@
 package com.maan.crm.service.impl;
 
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,14 +34,19 @@ import com.maan.crm.bean.ClientDetails;
 import com.maan.crm.bean.EnquiryDetails;
 import com.maan.crm.bean.LeadDetails;
 import com.maan.crm.bean.PolicyDetails;
+import com.maan.crm.bean.QuotationDetails;
 import com.maan.crm.bean.QuoteDetails;
+import com.maan.crm.bean.SequenceMaster;
 import com.maan.crm.repository.PolicyDetailsRepository;
+import com.maan.crm.repository.QuotationDetailsRepo;
 import com.maan.crm.repository.QuoteDetailsRepository;
+import com.maan.crm.repository.SequenceMasterRepository;
 import com.maan.crm.req.EnquiryGetReq;
 import com.maan.crm.req.EnquiryGridReq;
 import com.maan.crm.req.EnquiryListReq;
 import com.maan.crm.req.GetbyEnquiryQuoteReq;
 import com.maan.crm.req.LeadSearchReq;
+import com.maan.crm.req.QuotationDetailsSaveReq;
 import com.maan.crm.req.QuoteGetAllReq;
 import com.maan.crm.req.QuoteGetReq;
 import com.maan.crm.req.QuoteListReq;
@@ -54,7 +60,9 @@ import com.maan.crm.res.QuoteGetRes;
 import com.maan.crm.res.QuoteGridRes;
 import com.maan.crm.res.QuotePageRes;
 import com.maan.crm.res.QuoteSearchCountRes;
+import com.maan.crm.res.SuccessRes;
 import com.maan.crm.service.QuoteService;
+import com.maan.crm.util.error.Error;
 
 @Service
 @Transactional
@@ -73,6 +81,12 @@ public class QuoteServiceImpl implements QuoteService {
 	
 	@Autowired
 	private PolicyDetailsRepository policyRepo;
+	
+	@Autowired 
+	private QuotationDetailsRepo quotationRepo;
+	
+	@Autowired
+	private SequenceMasterRepository sequenceMasterRepo;
 	
 	@Override
 	public QuotePageRes getallQuote(QuoteGetAllReq req) {
@@ -308,6 +322,63 @@ public class QuoteServiceImpl implements QuoteService {
 			return null;
 		}
 		return res;
+	}
+
+	@Override
+	public List<Error> validateQuotationDetails(QuotationDetailsSaveReq req) {
+		List<Error> errors = new ArrayList<Error>();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+		try {
+			
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			log.info("Exception is --->" + e.getMessage());
+
+			return errors;
+		}
+		return errors;
+	}
+
+	@Override
+	public SuccessRes saveQuotationDetails(QuotationDetailsSaveReq req) {
+		SuccessRes res = new SuccessRes();
+
+		ModelMapper mapper = new ModelMapper();
+		try {
+			String quoteNo = "Q";
+			if(req.getQuoteNo() != null && StringUtils.isNotBlank(String.valueOf(req.getQuoteNo()))) {
+				QuotationDetails quote = quotationRepo.findByQuoteNoAndClientId(req.getQuoteNo(),req.getClientId());
+				if(quote!=null) {
+					quote = mapper.map(req, QuotationDetails.class);
+					quotationRepo.save(quote);
+					res.setResponse("Updated Successfully");
+					res.setSucessId(String.valueOf(req.getQuoteNo()));
+					return res;
+				}
+				
+			}
+				SequenceMaster sequence = sequenceMasterRepo.findBySequenceName("QUOTE_NO");
+				quoteNo = quoteNo + sequence.getSequenceValue();
+				req.setQuoteNo(quoteNo);
+				QuotationDetails quote = mapper.map(req, QuotationDetails.class);
+				quotationRepo.save(quote);
+				res.setResponse("Inserted Successfully");
+				res.setSucessId(String.valueOf(req.getQuoteNo()));
+				
+				//updating the sequence
+				sequence.setSequenceValue(sequence.getSequenceValue() +1);
+				sequenceMasterRepo.save(sequence);				
+			
+						
+		} catch (Exception ex) {
+			log.error(ex);
+			return null;
+		}
+		return res;
+	
 	}
 
 }

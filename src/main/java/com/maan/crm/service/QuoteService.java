@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.maan.crm.req.GetbyEnquiryQuoteReq;
 import com.maan.crm.req.LeadSearchReq;
+import com.maan.crm.req.QuotationDetailsSaveReq;
 import com.maan.crm.req.QuoteGetAllReq;
 import com.maan.crm.req.QuoteGetReq;
 import com.maan.crm.req.QuoteListReq;
@@ -15,6 +16,8 @@ import com.maan.crm.res.QuoteGetRes;
 import com.maan.crm.res.QuoteGridRes;
 import com.maan.crm.res.QuotePageRes;
 import com.maan.crm.res.QuoteSearchCountRes;
+import com.maan.crm.res.SuccessRes;
+import com.maan.crm.util.error.Error;
 
 @Service
 public interface QuoteService {
@@ -31,6 +34,10 @@ public interface QuoteService {
 	QuoteSearchCountRes searchQuoteCount(QuoteSearchReq req);
 
 	ClientLeadsGridRes getQuotePolicyDetails(QuoteListReq req);
+
+	List<Error> validateQuotationDetails(QuotationDetailsSaveReq req);
+
+	SuccessRes saveQuotationDetails(QuotationDetailsSaveReq req);
 
 
 }

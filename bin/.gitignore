@@ -31,13 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-*.class
-bin/pom.xml
-bin/.mvn/wrapper/maven-wrapper.jar
-bin/.mvn/wrapper/maven-wrapper.properties
-bin/README.md
-bin/mvnw
-bin/src/main/resources/application.properties
-bin/src/main/resources/email.html
-bin/.mvn/wrapper/maven-wrapper.jar
-bin/.mvn/wrapper/maven-wrapper.jar

@@ -28,6 +28,7 @@ import com.maan.crm.req.LeadDetailsJsonTempReq;
 import com.maan.crm.req.LeadEnquiryGetReq;
 import com.maan.crm.req.LeadGenerateReq;
 import com.maan.crm.req.LeadGetallCountReq;
+import com.maan.crm.req.LeadProductDetailsListReq;
 import com.maan.crm.req.LeadQuoteDetailsReq;
 import com.maan.crm.req.LeadSearchReq;
 import com.maan.crm.req.LeadViewReq;
@@ -481,6 +482,38 @@ public class LeadController {
 				else {
 					return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 				}
+		}
+		
+		// save product lead
+		@PostMapping("/lead/productsave")
+		@ApiOperation(value = "This method is to save lead product details")
+		public ResponseEntity<CommonCrmRes> saveLeadProductDetails(@RequestBody LeadProductDetailsListReq req) {
+			reqPrinter.reqPrint(req);
+			CommonCrmRes data = new CommonCrmRes();
+			List<Error> validation = entityService.validateCrmLeadProduct(req );
+			//// validation
+			if (validation != null && validation.size() != 0) {
+				data.setCommonResponse(null);
+				data.setIsError(true);
+				data.setErrorMessage(validation);
+				data.setMessage("Failed");
+				return new ResponseEntity<CommonCrmRes>(data, HttpStatus.OK);
+
+
+			} else {
+				/////// save
+
+				CrmLeadSuccessRes res = entityService.saveCrmLeadProduct(req);
+				data.setCommonResponse(res);
+				data.setIsError(false);
+				data.setErrorMessage(Collections.emptyList());
+				data.setMessage("Success");
+				if (res != null) {
+					return new ResponseEntity<CommonCrmRes>(data, HttpStatus.CREATED);
+				} else {
+					return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+				}
+			}
 		}
 }
 

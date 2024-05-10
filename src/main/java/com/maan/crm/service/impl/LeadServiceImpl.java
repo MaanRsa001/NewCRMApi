@@ -46,9 +46,11 @@ import com.maan.crm.bean.EnquiryDetails;
 import com.maan.crm.bean.InsuranceCompanyMaster;
 import com.maan.crm.bean.LeadDetails;
 import com.maan.crm.bean.LeadDetailsId;
+import com.maan.crm.bean.LeadProductDetails;
 import com.maan.crm.bean.OldPolicyDetails;
 import com.maan.crm.bean.PolicyDetails;
 import com.maan.crm.bean.QuoteDetails;
+import com.maan.crm.bean.SequenceMaster;
 import com.maan.crm.bean.VehicleDetails;
 import com.maan.crm.notification.mail.dto.MailFramingReq;
 import com.maan.crm.notification.service.impl.MailThreadServiceImpl;
@@ -66,6 +68,8 @@ import com.maan.crm.repository.ProspectRepository;
 import com.maan.crm.repository.QuoteDetailsRepository;
 import com.maan.crm.repository.TrackingDetailsRepository;
 import com.maan.crm.repository.VehicleDetailsRepository;
+import com.maan.crm.repository.SequenceMasterRepository;
+import com.maan.crm.repository.LeadProductDetailsRepository;
 import com.maan.crm.req.ClientBasicDetails;
 import com.maan.crm.req.ClientLeadCountReq;
 import com.maan.crm.req.ClientLeadReq;
@@ -81,6 +85,8 @@ import com.maan.crm.req.LeadDetailsJsonTempReq;
 import com.maan.crm.req.LeadEnquiryGetReq;
 import com.maan.crm.req.LeadGenerateReq;
 import com.maan.crm.req.LeadGetallCountReq;
+import com.maan.crm.req.LeadProductDetailsListReq;
+import com.maan.crm.req.LeadProductDetailsSaveReq;
 import com.maan.crm.req.LeadQuoteDetailsReq;
 import com.maan.crm.req.LeadSearchReq;
 import com.maan.crm.req.LeadViewReq;
@@ -155,7 +161,13 @@ public class LeadServiceImpl implements LeadService {
 
 	@Autowired
 	private TrackingDetailsRepository trackRepo;
-
+	
+	@Autowired
+	private SequenceMasterRepository sequenceMasterRepo;
+	
+	@Autowired
+	private LeadProductDetailsRepository leadProductDetailsRepo;
+	
 	@PersistenceContext
 	private EntityManager em;
 
@@ -181,6 +193,7 @@ public class LeadServiceImpl implements LeadService {
 
 	@Autowired
 	private PolicyDetailsRepository policyRepo;
+	
 
 	private Logger log = LogManager.getLogger(LeadServiceImpl.class);
 
@@ -1704,6 +1717,195 @@ public class LeadServiceImpl implements LeadService {
 			return null;
 		}
 		return res;
+	}
+
+	@Override
+	public List<Error> validateCrmLeadProduct(LeadProductDetailsListReq req) {
+		List<LeadProductDetailsSaveReq> leadProdutList = req.getLeadProdutList();
+		List<Error> errors = new ArrayList<Error>();
+		try {
+			if (req.getClientRefNo() == null || StringUtils.isBlank(req.getClientRefNo())) {
+				errors.add(new Error("02", "Client Ref No", "Please Enter Client Ref No"));
+			} else if (req.getClientRefNo().length() > 50) {
+				errors.add(new Error("02", "Client Ref No", "Please Enter Client Ref No within 50 Characters"));
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info("Exception is --->" + e.getMessage());
+			return errors;
+		}
+		return errors;
+	}
+
+	@Override
+	@Transactional
+	public CrmLeadSuccessRes saveCrmLeadProduct(LeadProductDetailsListReq req) {
+
+		CrmLeadSuccessRes res = new CrmLeadSuccessRes();
+
+		ModelMapper mapper = new ModelMapper();
+		String leadId = " ";
+		String createdBy =" ";
+		Date entryDate = null;
+		ArrayList<LeadProductDetails> LPDList = new ArrayList<>(); 
+		try {
+			String clientRefNo = " ";
+			if(StringUtils.isNotBlank(req.getClientRefNo())) {
+				clientRefNo = req.getClientRefNo();
+			}
+			if(StringUtils.isNotBlank(req.getLeadId())) {
+				leadId=req.getLeadId();
+				List<LeadProductDetails> byLeadId = leadProductDetailsRepo.findByLeadId(leadId);
+				if(byLeadId!=null) {
+					createdBy = byLeadId.get(0).getCreatedBy();
+					entryDate = byLeadId.get(0).getEntryDate();
+					leadProductDetailsRepo.deleteAll(byLeadId);
+					leadProductDetailsRepo.flush();
+					
+				}
+	
+				List<LeadProductDetailsSaveReq> leadProdutList = req.getLeadProdutList();
+				if(leadProdutList != null && leadProdutList.size()>0) {
+					int sequence = 1;
+					for(LeadProductDetailsSaveReq product : leadProdutList ) {
+						
+						LeadProductDetails details = mapper.map(product, LeadProductDetails.class);
+						details.setLeadId(leadId);
+						details.setClientRefNo(clientRefNo);
+						details.setClientName(req.getClientName());
+						details.setCreatedBy(createdBy);
+						details.setEntryDate(entryDate);
+						details.setBranchCode(req.getBranchCode());
+						details.setRegionCode(req.getRegionCode());
+						details.setUpdatedBy(req.getUpdatedBy());
+						details.setUpdatedDate(new Date());	
+						details.setSequenceNo(sequence);
+						leadProductDetailsRepo.saveAndFlush(details);
+						
+					    LPDList.add(details);
+						sequence++;
+					}
+					
+				}
+				//leadProductDetailsRepo.saveAll(LPDList);
+				res.setResponse("Updated Successfully ");
+				res.setLeadid(req.getLeadId());
+				log.info("Saved Details is ---> " + json.toJson(LPDList));
+				
+				// Tracking
+				TrackingReq treq = new TrackingReq();
+				treq.setCreatedBy(req.getCreatedBy());
+				treq.setBranchCode(req.getBranchCode());
+				treq.setEntryDate(entryDate);
+				treq.setInsCompanyId(req.getInsCompanyId());
+				treq.setRegionCode(req.getRegionCode());
+				treq.setClientRefNo(clientRefNo);
+				treq.setClientName(req.getClientName());
+				treq.setLeadId(leadId);
+				treq.setStatus("Lead");
+				treq.setStatusDescription("Lead Updated Successful");
+				trackService.tracking(treq);
+
+			}
+			else {
+				SequenceMaster bySequenceName = sequenceMasterRepo.findBySequenceName("LEAD_ID");
+				Integer sequenceValue = bySequenceName.getSequenceValue();
+				leadId = "L" + sequenceValue;
+				List<LeadProductDetailsSaveReq> leadProdutList = req.getLeadProdutList();
+				if(leadProdutList != null && leadProdutList.size()>0) {
+					int sequence = 1;
+					for(LeadProductDetailsSaveReq product : leadProdutList ) {
+						
+						LeadProductDetails details = mapper.map(product, LeadProductDetails.class);
+						details.setLeadId(leadId);
+						details.setClientRefNo(clientRefNo);
+						details.setClientName(req.getClientName());
+						details.setCreatedBy(req.getCreatedBy());
+						details.setEntryDate(new Date());
+						details.setBranchCode(req.getBranchCode());
+						details.setRegionCode(req.getRegionCode());
+						details.setSequenceNo(sequence);
+						LPDList.add(details);
+						sequence++;
+					}
+					
+				}
+				leadProductDetailsRepo.saveAllAndFlush(LPDList);
+				res.setResponse("Inserted Successfully ");
+				res.setLeadid(leadId);
+				
+				log.info("Saved Details is ---> " + json.toJson(LPDList));
+				bySequenceName.setSequenceValue(sequenceValue + 1);
+				sequenceMasterRepo.save(bySequenceName);
+				// Tracking
+				TrackingReq treq = new TrackingReq();
+				treq.setCreatedBy(req.getCreatedBy());
+				treq.setBranchCode(req.getBranchCode());
+				treq.setEntryDate(entryDate);
+				treq.setInsCompanyId(req.getInsCompanyId());
+				treq.setRegionCode(req.getRegionCode());
+				treq.setClientRefNo(clientRefNo);
+				treq.setClientName(req.getClientName());
+				treq.setLeadId(leadId);
+				treq.setStatus("Lead");
+				treq.setStatusDescription("Lead Inserted Successful");
+				trackService.tracking(treq);
+
+			}
+			/*
+			 * // Save Tracking SimpleDateFormat tra = new
+			 * SimpleDateFormat("yyMMddhhmmssSSS");
+			 * 
+			 * TrackingDetails saveTracking = new TrackingDetails(); Date today = new
+			 * Date(); String trackingId = tra.format(today);
+			 * saveTracking.setTrackingId(trackingId);
+			 * saveTracking.setInsCompanyId(req.getInsCompanyId());
+			 * saveTracking.setCreatedBy(req.getCreatedBy()); //
+			 * saveTracking.setRemarks(req.getRemarks()); saveTracking.setStatus("Lead");
+			 * saveTracking.setEntryDate(today);
+			 * 
+			 * //trackRepo.save(saveTracking);
+			 */
+			// Thread To Trigger Mail
+			ClientDetails clientDetails = clientrepo.findByClientRefNo(clientRefNo);
+			if(clientDetails!=null ) {
+				clientDetails.setLastVisitedDate(new Date());
+				clientrepo.saveAndFlush(clientDetails);
+				/*
+				 * InsuranceCompanyMaster companyData =
+				 * insRepo.findByInsId(req.getInsCompanyId().toString()); ClaimLoginMaster
+				 * loginData = loginRepo.findByLoginId(req.getCreatedBy());
+				 * 
+				 * List<String> ccMails = new ArrayList<String>();
+				 * ccMails.add(companyData.getInsEmail()); ccMails.add(loginData.getUserMail());
+				 * 
+				 * List<String> toMails = new ArrayList<String>();
+				 * toMails.add(clientDetails.getEmailId());
+				 * 
+				 * Map<String, Object> keys = new HashMap<String, Object>(); keys.put("LEAD_ID",
+				 * leadId == null ? "" : leadId.toString());
+				 * 
+				 * // Set Mail Request MailFramingReq mailFrameReq = new MailFramingReq();
+				 * mailFrameReq.setInsId(req.getInsCompanyId().toString());
+				 * mailFrameReq.setNotifTemplateId("LEAD_INFO"); mailFrameReq.setKeys(keys);
+				 * mailFrameReq.setMailCc(ccMails); mailFrameReq.setMailTo(toMails);
+				 * mailFrameReq.setMailRegards(companyData.getRegards());
+				 * mailFrameReq.setStatus(res.getResponse());
+				 * 
+				 * log.info("{ Mail Pushed SuccessFully . LeadId is ---> " + leadId +
+				 * " ; ClientRefNo is --->" + req.getClientRefNo() + " }"); //
+				 * mailFrameService.sendSms(mailReq);
+				 * mailThreadService.threadToSendMail(mailFrameReq);
+				 */			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info(e.getMessage());
+			return res;
+		}
+		return res;
+
 	}
 
 }

@@ -22,6 +22,10 @@ public class ProspectDetailsSaveReq  implements Serializable {
 
 	@JsonProperty("ProspectId")
 	private Integer prospectId;
+	@JsonProperty("LeadId")
+	private String LeadId;
+	@JsonProperty("QuoteNo")
+	private String quoteNo;
 	@JsonProperty("ClientRefNo")
 	private String clientRefNo;
 	@JsonProperty("VehChassisNo")

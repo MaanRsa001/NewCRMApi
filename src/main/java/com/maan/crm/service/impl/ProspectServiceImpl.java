@@ -7,6 +7,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.persistence.Tuple;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -23,9 +34,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.gson.Gson;
 import com.maan.crm.bean.ClaimLoginMaster;
 import com.maan.crm.bean.ClientDetails;
+import com.maan.crm.bean.EnquiryDetails;
 import com.maan.crm.bean.InsuranceCompanyMaster;
 import com.maan.crm.bean.LeadDetails;
 import com.maan.crm.bean.OldPolicyDetails;
+import com.maan.crm.bean.PolicyDetails;
 import com.maan.crm.bean.ProspectDetails;
 import com.maan.crm.bean.ProspectDetailsId;
 import com.maan.crm.bean.ProspectOldPolicyDetails;
@@ -44,6 +57,7 @@ import com.maan.crm.bean.ProspectQuotationVehicleDetailsId;
 import com.maan.crm.bean.ProspectsQuotationOtherDetails;
 import com.maan.crm.bean.ProspectsQuotationOtherDetailsId;
 import com.maan.crm.bean.QuoteDetails;
+import com.maan.crm.bean.SequenceMaster;
 import com.maan.crm.notification.mail.dto.MailFramingReq;
 import com.maan.crm.notification.service.impl.MailThreadServiceImpl;
 import com.maan.crm.repository.ClaimLoginMasterRepository;
@@ -62,6 +76,7 @@ import com.maan.crm.repository.ProspectQuotationVehicelDetailsRepository;
 import com.maan.crm.repository.ProspectRepository;
 import com.maan.crm.repository.ProspectsQuotationOtherDetailsRepository;
 import com.maan.crm.repository.QuoteDetailsRepository;
+import com.maan.crm.repository.SequenceMasterRepository;
 import com.maan.crm.req.LeadDetailsJsonTempReq;
 import com.maan.crm.req.LeadQuoteDetailsGetReq;
 import com.maan.crm.req.ProspectBulkEditReq;
@@ -79,7 +94,11 @@ import com.maan.crm.req.ProspectReq;
 import com.maan.crm.req.ProspectSearchReq;
 import com.maan.crm.req.ProspectsQuotationOtherDetailsSaveReq;
 import com.maan.crm.req.TrackingReq;
+import com.maan.crm.res.ClientDetailsGetAllRes;
+import com.maan.crm.res.ClientDetailsGridRes;
 import com.maan.crm.res.CrmLeadRes;
+import com.maan.crm.res.LeadDetailsGetAllRes;
+import com.maan.crm.res.LeadDetailsGridRes;
 import com.maan.crm.res.LeadQuoteDetailsGetRes;
 import com.maan.crm.res.ProspectDetailsRes;
 import com.maan.crm.res.ProspectGetAllCountRes;
@@ -160,7 +179,8 @@ public class ProspectServiceImpl implements ProspectService {
 	@Autowired
 	private TrackingServiceImpl trackService ;
 	
-	
+	@Autowired
+	private SequenceMasterRepository sequenceMasterRepo;
 	
 	Gson json = new Gson();
 
@@ -249,7 +269,7 @@ public class ProspectServiceImpl implements ProspectService {
 	@Override
 	public ProspectPaymentSuccessRes saveProspectPayment(LeadDetailsJsonTempReq tempReq ) {
 		ProspectPaymentSaveReq req = tempReq.getProspectPayment();
-		if(StringUtils.isNotBlank(req.getProspectId())) {
+		if(StringUtils.isNotBlank(req.getProspectId()) && req.getProspectId().length()>1){
 			// Remove the first character "L"
 			// Convert the numeric string to an integer
 			String prospectId = req.getProspectId();
@@ -532,9 +552,10 @@ public class ProspectServiceImpl implements ProspectService {
 
 				prospectid = 1000;
 
-				List<ProspectDetails> list = prospectdetailsrepositoryl.findAllByOrderByProspectidDesc();
-				if (list.size() != 0) {
-					prospectid = list.get(0).getProspectid() + 1;
+				SequenceMaster sequence = sequenceMasterRepo.findBySequenceName("PROSPECT_ID");				List<Error> list;
+				if (sequence != null) {
+					prospectid = sequence.getSequenceValue();
+					
 				}
 				ModelMapper modelMapper = new ModelMapper();
 				ProspectDetails ent = modelMapper.map(req, ProspectDetails.class);
@@ -545,6 +566,10 @@ public class ProspectServiceImpl implements ProspectService {
 				ProspectDetails response = prospectdetailsrepositoryl.saveAndFlush(ent);
 				res.setResponse("Inserted Sucessfully");
 				res.setSucessId(String.valueOf(response.getProspectid()));
+				
+				//updating the sequence 
+				sequence.setSequenceValue(sequence.getSequenceValue() +1);
+				sequenceMasterRepo.save(sequence);
 				
 				// Tracking
 				TrackingReq treq  = new TrackingReq(); 
@@ -1441,6 +1466,35 @@ public class ProspectServiceImpl implements ProspectService {
 		return null;
 	}
 	return resList;
+	}
+
+	@Override
+	public LeadDetailsGetAllRes getLeadDetailsList(LeadQuoteDetailsGetReq req) {
+		LeadDetailsGetAllRes res = new LeadDetailsGetAllRes();
+		ModelMapper mapper = new ModelMapper();
+		try {
+
+			// Find All
+			List<LeadDetails> leadDetails = leadRepo.findByClientRefNoOrderByEntryDateDesc(req.getClientRefNo());
+			
+			List<LeadDetailsGridRes> leadList = new ArrayList<LeadDetailsGridRes>();
+			for (LeadDetails data : leadDetails) {
+				LeadDetailsGridRes leadData = new LeadDetailsGridRes();
+				leadData = mapper.map(data, LeadDetailsGridRes.class);
+				
+				leadList.add(leadData);
+			}
+			res.setLeadDetails(leadList);
+			Long count1 = (Long) leadRepo.countByClientRefNo(req.getClientRefNo());
+			res.setLeadCount(count1);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info(e.getMessage());
+			return null;
+
+		}
+		return res;
 	}
 
 }

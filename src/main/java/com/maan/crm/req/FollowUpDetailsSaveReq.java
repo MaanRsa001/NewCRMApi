@@ -24,6 +24,9 @@ public class FollowUpDetailsSaveReq implements Serializable {
 
 	@JsonProperty("Clientid")
 	private String clientid;
+	
+	@JsonProperty("Prospectid")
+	private String prospectid;
 
 	@JsonProperty("Companyid")
 	private String companyid;

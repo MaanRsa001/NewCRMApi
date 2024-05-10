@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.maan.crm.req.BranchMasterDropdownReq;
 import com.maan.crm.req.BroughtDropDownReq;
+import com.maan.crm.req.LivDropDownReq;
 import com.maan.crm.req.UnderwriterReq;
 import com.maan.crm.res.AssigntoGroupRes;
 import com.maan.crm.res.AssigntoUserRes;
@@ -990,11 +991,11 @@ public class DropDownController {
 		}
 	}
 	
-	@GetMapping("/livdropdown")
+	@PostMapping("/livdropdown")
 	@ApiOperation(value="This method is to list item value drop down ")
-	public ResponseEntity<CommonCrmRes> getLIVDropDown(@RequestParam("itemType") String itemType){
+	public ResponseEntity<CommonCrmRes> getLIVDropDown(@RequestBody LivDropDownReq req){
 		CommonCrmRes data = new CommonCrmRes();
-		List<DropDownResA> res = dropDownService.getLIVDropDown(itemType);
+		List<DropDownResA> res = dropDownService.getLIVDropDown(req.getItemType());
 		data.setCommonResponse(res);
 		data.setErrorMessage(Collections.emptyList());
 		data.setIsError(false);

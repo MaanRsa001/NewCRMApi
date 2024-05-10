@@ -16,6 +16,7 @@ import com.maan.crm.req.LeadDetailsJsonTempReq;
 import com.maan.crm.req.LeadEnquiryGetReq;
 import com.maan.crm.req.LeadGenerateReq;
 import com.maan.crm.req.LeadGetallCountReq;
+import com.maan.crm.req.LeadProductDetailsListReq;
 import com.maan.crm.req.LeadQuoteDetailsReq;
 import com.maan.crm.req.LeadSearchReq;
 import com.maan.crm.req.LeadViewReq;
@@ -116,6 +117,10 @@ public interface LeadService {
 
 	//Enquiry List
 	ClientLeadsGridRes getEnquiryListDetails(LeadViewReq req);
+
+	List<Error> validateCrmLeadProduct(LeadProductDetailsListReq req);
+
+	CrmLeadSuccessRes saveCrmLeadProduct(LeadProductDetailsListReq req);
 
 
 

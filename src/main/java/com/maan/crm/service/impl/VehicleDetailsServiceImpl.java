@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
+import com.maan.crm.bean.LeadDetails;
 import com.maan.crm.bean.VehicleDetails;
+import com.maan.crm.repository.LeadRepository;
 import com.maan.crm.repository.VehicleDetailsRepository;
 import com.maan.crm.req.VehicleDetailsGetAllReq;
 import com.maan.crm.req.VehicleDetailsGetReq;
@@ -36,6 +38,9 @@ public class VehicleDetailsServiceImpl implements VehicleDetailsService {
 
 	@Autowired
 	private VehicleDetailsRepository vehiclerepo;
+	
+	@Autowired
+	private LeadRepository leadrepo;
 
 	private Logger log = LogManager.getLogger(VehicleDetailsServiceImpl.class);
 
@@ -202,6 +207,13 @@ public class VehicleDetailsServiceImpl implements VehicleDetailsService {
 
 			vehiclerepo.save(saveVehicleDetails);
 			log.info("Saved Details is ---> " + json.toJson(saveVehicleDetails));
+			String leadId = req.getLeadId()==null?"":req.getLeadId();
+			LeadDetails byLeadId = leadrepo.findByLeadId(leadId);
+			if(byLeadId != null) {
+				byLeadId.setVehChassisNo(chassisNo);
+				leadrepo.save(byLeadId);
+			}
+			
 			res.setSucessId(String.valueOf(vehCode));
 		} catch (Exception e) {
 			e.printStackTrace();

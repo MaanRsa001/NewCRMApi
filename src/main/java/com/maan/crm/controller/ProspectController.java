@@ -41,6 +41,7 @@ import com.maan.crm.res.ProspectQuotationSuccessRes;
 import com.maan.crm.res.ProspectRes;
 import com.maan.crm.res.ProspectSearchRes;
 import com.maan.crm.res.SuccessRes;
+import com.maan.crm.res.LeadDetailsGetAllRes;
 import com.maan.crm.service.CRMValidationService;
 import com.maan.crm.service.PrintReqService;
 import com.maan.crm.service.ProspectService;
@@ -688,4 +689,24 @@ public class ProspectController {
 				}
 					
 	}
+	
+	@PostMapping("/getlead/byclientrefno")
+	@ApiOperation(value = "This Method is to get all leads by a client")
+	public ResponseEntity<CommonCrmRes> leadDetailsList(@RequestBody LeadQuoteDetailsGetReq req){
+		
+		CommonCrmRes data = new CommonCrmRes();
+		LeadDetailsGetAllRes res = Service.getLeadDetailsList(req);
+				data.setCommonResponse(res);
+				data.setErrorMessage(Collections.emptyList());
+				data.setIsError(false);
+				data.setMessage("Success");
+				
+				if(res!=null) {
+					return new ResponseEntity<CommonCrmRes>(data, HttpStatus.CREATED);
+					}
+				else {
+					return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+				}	
+	}
+	
 }

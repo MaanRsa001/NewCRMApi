@@ -55,7 +55,9 @@ public class FollowUpDetails implements Serializable  {
 	@Id
     @Column(name="FOLLOWUPAPPLICABLEID",nullable=false)
     private String followupapplicableid;
-
+	
+	@Column(name="PROSPECT_ID")
+	private Integer prospectid ;
     
     @Column(name="NEXTFOLLOWUPTIME")
     private String      nextfollowuptime ;

@@ -494,33 +494,31 @@ public class PolicyServiceImpl implements PolicyService {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		try {
-			if (Integer.valueOf(req.getBusinessTypeId()) == null
-					|| StringUtils.isBlank(Integer.toString(req.getBusinessTypeId()))) {
+			if (req.getBusinessTypeId()==null ){
 				errors.add(new Error("01", "Business Type Id", "Please Enter Business Type Id"));
 			}
-			if (req.getBusinessType() == null || StringUtils.isBlank(req.getBusinessType())) {
+			if (StringUtils.isBlank(req.getBusinessType())) {
 				errors.add(new Error("02", "Business Type", "Please Enter Business Type"));
 			}
-			if (req.getAutoDebitYN() == null || StringUtils.isBlank(req.getAutoDebitYN())) {
+			if (StringUtils.isBlank(req.getAutoDebitYN())) {
 				errors.add(new Error("03", "Auto Debit YN", "Please Enter Auto Debit YN"));
 			}
-			if (req.getClasss() == null || StringUtils.isBlank(req.getClasss())) {
+			if (StringUtils.isBlank(req.getClasss())) {
 				errors.add(new Error("04", "Classs", "Please Enter Classs"));
 			}
-			if (Integer.valueOf(req.getClassId()) == null || StringUtils.isBlank(Integer.toString(req.getClassId()))) {
+			if (req.getClassId() == null || StringUtils.isBlank(Integer.toString(req.getClassId()))) {
 				errors.add(new Error("05", "Class Id", "Please Enter Class Id"));
 			}
-			if (Integer.valueOf(req.getClientId()) == null
-					|| StringUtils.isBlank(Integer.toString(req.getClientId()))) {
+			if (req.getClientId() == null) {
 				errors.add(new Error("06", "Client Id", "Please Enter Client Id"));
 			}
-			if (req.getClientRefNo() == null || StringUtils.isBlank(req.getClientRefNo())) {
+			if (StringUtils.isBlank(req.getClientRefNo())) {
 				errors.add(new Error("07", "Client Ref No", "Please Enter Client Ref No"));
 			}
-			if (req.getCoInsurerDetails() == null || StringUtils.isBlank(req.getCoInsurerDetails())) {
+			if (StringUtils.isBlank(req.getCoInsurerDetails())) {
 				errors.add(new Error("08", "Co Insurer Details", "Please Enter Co Insurer Details"));
 			}
-			if (req.getCommencementDate().toString() == null
+			if (req.getCommencementDate() == null
 					|| StringUtils.isBlank(req.getCommencementDate().toString())) {
 				errors.add(new Error("09", "Commencement Date", "Please Enter Commencement Date"));
 			}
@@ -528,40 +526,40 @@ public class PolicyServiceImpl implements PolicyService {
 					|| StringUtils.isBlank(Double.toString(req.getCommissionBasePremium()))) {
 				errors.add(new Error("10", "Commission Base Premium", "Please Enter Commission Base Premium"));
 			}
-			if (req.getCoverNoteNumber() == null || StringUtils.isBlank(req.getCoverNoteNumber())) {
+			if (StringUtils.isBlank(req.getCoverNoteNumber())) {
 				errors.add(new Error("11", "Cover Note Number", "Please Enter Cover Note Number"));
 			}
 			if (Double.valueOf(req.getDiscountPercentage()) == null
 					|| StringUtils.isBlank(Double.toString(req.getDiscountPercentage()))) {
 				errors.add(new Error("12", "Discount Percentage", "Please Enter Discount Percentage"));
 			}
-			if (req.getExpiryDate().toString() == null || StringUtils.isBlank(req.getExpiryDate().toString())) {
+			if (req.getExpiryDate() == null || StringUtils.isBlank(req.getExpiryDate().toString())) {
 				errors.add(new Error("13", "Expiry Date", "Please Enter Expiry Date"));
 			}
 			if (Double.valueOf(req.getGST()) == null || StringUtils.isBlank(Double.toString(req.getGST()))) {
 				errors.add(new Error("14", "GST", "Please Enter GST"));
 			}
-			if (req.getInsurancePlan() == null || StringUtils.isBlank(req.getInsurancePlan())) {
+			if (StringUtils.isBlank(req.getInsurancePlan())) {
 				errors.add(new Error("15", "Insurance Plan", "Please Enter Insurance Plan"));
 			}
-			if (req.getInsurer() == null || StringUtils.isBlank(req.getInsurer())) {
+			if (StringUtils.isBlank(req.getInsurer())) {
 				errors.add(new Error("16", "Insurer", "Please Enter Insurer"));
 			}
-			if (req.getInsurerBranch() == null || StringUtils.isBlank(req.getInsurerBranch())) {
+			if (StringUtils.isBlank(req.getInsurerBranch())) {
 				errors.add(new Error("17", "Insurer Branch", "Please Enter Insurer Branch"));
 			}
-			if (Integer.valueOf(req.getInsurerBranchId()) == null
+			if (req.getInsurerBranchId() == null
 					|| StringUtils.isBlank(Integer.toString(req.getInsurerBranchId()))) {
 				errors.add(new Error("18", "Insurer Branch Id", "Please Enter Insurer Branch Id"));
 			}
-			if (Integer.valueOf(req.getInsurerId()) == null
+			if (req.getInsurerId() == null
 					|| StringUtils.isBlank(Integer.toString(req.getInsurerId()))) {
 				errors.add(new Error("19", "Insurer Id", "Please Enter Insurer Id"));
 			}
-			if (req.getMaturityDate().toString() == null || StringUtils.isBlank(req.getMaturityDate().toString())) {
+			if (req.getMaturityDate() == null || StringUtils.isBlank(req.getMaturityDate().toString())) {
 				errors.add(new Error("20", "Maturity Date", "Please Enter Maturity Date"));
 			}
-			if (req.getNextPremiumDueDate().toString() == null
+			if (req.getNextPremiumDueDate() == null
 					|| StringUtils.isBlank(req.getNextPremiumDueDate().toString())) {
 				errors.add(new Error("21", "Next Premium Due Date", "Please Enter Next Premium Due Date"));
 			}
@@ -573,47 +571,47 @@ public class PolicyServiceImpl implements PolicyService {
 					|| StringUtils.isBlank(Double.toString(req.getOtherPremium()))) {
 				errors.add(new Error("23", "Other Premium", "Please Enter Other Premium"));
 			}
-			if (Integer.valueOf(req.getPolicyTermInYears()) == null
+			if (req.getPolicyTermInYears() == null
 					|| StringUtils.isBlank(Integer.toString(req.getPolicyTermInYears()))) {
 				errors.add(new Error("24", "Policy Term In Years", "Please Enter Policy Term In Years"));
 			}
-			if (req.getPolicyNumber() == null || StringUtils.isBlank(req.getPolicyNumber())) {
+			if (StringUtils.isBlank(req.getPolicyNumber())) {
 				errors.add(new Error("25", "Policy Number", "Please Enter Policy Number"));
 			}
-			if (req.getPolicyType() == null || StringUtils.isBlank(req.getPolicyType())) {
+			if (StringUtils.isBlank(req.getPolicyType())) {
 				errors.add(new Error("26", "Policy Type", "Please Enter Policy Type"));
 			}
-			if (Integer.valueOf(req.getPolicyTypeId()) == null
+			if (req.getPolicyTypeId() == null
 					|| StringUtils.isBlank(Integer.toString(req.getPolicyTypeId()))) {
 				errors.add(new Error("27", "Policy Type Id", "Please Enter Policy Type Id"));
 			}
-			if (req.getPremiumDueDate().toString() == null || StringUtils.isBlank(req.getPremiumDueDate().toString())) {
+			if (req.getPremiumDueDate() == null || StringUtils.isBlank(req.getPremiumDueDate().toString())) {
 				errors.add(new Error("28", "Premium Due Date", "Please Enter Premium Due Date"));
 			}
 
-			if (Integer.valueOf(req.getPremiumPayingTermInYears()) == null
+			if (req.getPremiumPayingTermInYears() == null
 					|| StringUtils.isBlank(Integer.toString(req.getPremiumPayingTermInYears()))) {
 				errors.add(
 						new Error("29", "Premium Paying Term In Years", "Please Enter Premium Paying Term In Years"));
 			}
-			if (req.getPremiumPaymentFrequency() == null || StringUtils.isBlank(req.getPremiumPaymentFrequency())) {
+			if (StringUtils.isBlank(req.getPremiumPaymentFrequency())) {
 				errors.add(new Error("30", "Premium Payment Frequency", "Please Enter Premium Payment Frequency"));
 			}
-			if (Integer.valueOf(req.getPremiumPaymentTypeId()) == null
+			if (req.getPremiumPaymentTypeId() == null
 					|| StringUtils.isBlank(Integer.toString(req.getPremiumPaymentTypeId()))) {
 				errors.add(new Error("31", "Premium Payment Type Id", "Please Enter Premium Payment Type Id"));
 			}
-			if (req.getPremiumPaymentType() == null || StringUtils.isBlank(req.getPremiumPaymentType())) {
+			if (StringUtils.isBlank(req.getPremiumPaymentType())) {
 				errors.add(new Error("32", "PremiumPaymentType", "Please Enter Premium Payment Type"));
 			}
 			if (Double.valueOf(req.getPremiumWithGST()) == null
 					|| StringUtils.isBlank(Double.toString(req.getPremiumWithGST()))) {
 				errors.add(new Error("33", "Premium With GST", "Please Enter Premium With GST"));
 			}
-			if (req.getStartDate().toString() == null || StringUtils.isBlank(req.getStartDate().toString())) {
+			if (req.getStartDate() == null || StringUtils.isBlank(req.getStartDate().toString())) {
 				errors.add(new Error("34", "Start Date", "Please Enter Start Date"));
 			}
-			if (req.getRenewableFlagYN() == null || StringUtils.isBlank(req.getRenewableFlagYN())) {
+			if (StringUtils.isBlank(req.getRenewableFlagYN())) {
 				errors.add(new Error("35", "Renewable Flag YN", "Please Enter Renewable Flag YN"));
 			}
 			if (Double.valueOf(req.getSumInsured()) == null
@@ -624,7 +622,7 @@ public class PolicyServiceImpl implements PolicyService {
 					|| StringUtils.isBlank(Double.toString(req.getTotalPremium()))) {
 				errors.add(new Error("37", "Total Premium", "Please Enter Total Premium"));
 			}
-			if (Integer.valueOf(req.getVehicleId()) == null
+			if (req.getVehicleId() == null
 					|| StringUtils.isBlank(Integer.toString(req.getVehicleId()))) {
 				errors.add(new Error("38", "Vehicle Id", "Please Enter Vehicle Id"));
 			}

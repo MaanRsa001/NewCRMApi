@@ -419,7 +419,8 @@ public class CampaignServiceImpl implements CampaignService {
 
 		try {
 			String clientRefNo = "";
-			ClientDetails data = clientrepo.findByMobileNumber(req.getMobileNumber());
+			List<ClientDetails> dataList = clientrepo.findByMobileNumber(req.getMobileNumber());
+			ClientDetails data = dataList !=null ? dataList.get(0):new ClientDetails();
 			CampaignMaster campdata = masterrepo.findByCampaignId(req.getCampaignId());
 
 			// CLient Save

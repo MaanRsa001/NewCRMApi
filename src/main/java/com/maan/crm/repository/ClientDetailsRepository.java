@@ -19,7 +19,7 @@ public interface ClientDetailsRepository  extends JpaRepository<ClientDetails, C
 	ClientDetails findByClientRefNo(String clientRefNo);
 //	Page<ClientDetails> findByInsCompanyIdAndBranchCode(Pageable paging, String insId, String branchCode);
 	List<ClientDetails> findByClientNameIgnoreCase(String searchValue);
-	ClientDetails findByCrno(String searchValue);
+	List<ClientDetails> findByCrno(String searchValue);
 	List<ClientDetails> findByClientRefNoIn(List<Integer> clientIds);
 //	ClientDetails findByClientRefNoIn(String clientRefNo);
 	ClientDetails findByClientRefNoAndCreatedBy(String clientRefNo, String createdBy);
@@ -42,7 +42,7 @@ public interface ClientDetailsRepository  extends JpaRepository<ClientDetails, C
 	List<ClientDetails> findByClientRefNoOrderByEntryDateDesc(String clientRefNo);
 	
 	// Campaign Details
-	ClientDetails findByMobileNumber(String mobileNumber);
+	List<ClientDetails> findByMobileNumber(String mobileNumber);
 	List<ClientDetails> findByAnnualIncomeIdIn(List<Integer> annualIncomeIds);
 	List<ClientDetails> findByOccupationIdIn(List<Integer> occupationIds);
 	List<ClientDetails> findByDateOfBirthGreaterThanEqualAndDateOfBirthLessThanEqualOrderByEntryDateDesc(Date startDate,

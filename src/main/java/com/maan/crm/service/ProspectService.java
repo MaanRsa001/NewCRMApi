@@ -24,6 +24,7 @@ import com.maan.crm.req.ProspectQuotationVehicleDetailsSaveReq;
 import com.maan.crm.req.ProspectReq;
 import com.maan.crm.req.ProspectSearchReq;
 import com.maan.crm.req.ProspectsQuotationOtherDetailsSaveReq;
+import com.maan.crm.res.LeadDetailsGetAllRes;
 import com.maan.crm.res.LeadQuoteDetailsGetRes;
 import com.maan.crm.res.LeadSearchCountRes;
 import com.maan.crm.res.ProspectBulkEditRes;
@@ -133,6 +134,9 @@ public interface ProspectService {
 	
 	// Get Lead Quote Details
 	List<LeadQuoteDetailsGetRes> leadQuoteDetails(LeadQuoteDetailsGetReq req);
+	
+	// Get Lead Details List by client ref no
+	LeadDetailsGetAllRes getLeadDetailsList(LeadQuoteDetailsGetReq req);
 
 	
 	
