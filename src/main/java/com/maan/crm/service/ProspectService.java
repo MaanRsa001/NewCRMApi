@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.maan.crm.document.req.ProspectProductRequest;
 import com.maan.crm.req.LeadDetailsJsonTempReq;
+import com.maan.crm.req.LeadProductDetailsSaveReq;
 import com.maan.crm.req.LeadQuoteDetailsGetReq;
 import com.maan.crm.req.ProspectBulkEditReq;
 import com.maan.crm.req.ProspectDetailsGetAllReq;
@@ -25,6 +27,7 @@ import com.maan.crm.req.ProspectReq;
 import com.maan.crm.req.ProspectSearchReq;
 import com.maan.crm.req.ProspectsQuotationOtherDetailsSaveReq;
 import com.maan.crm.res.LeadDetailsGetAllRes;
+import com.maan.crm.res.LeadProductEditRes;
 import com.maan.crm.res.LeadQuoteDetailsGetRes;
 import com.maan.crm.res.LeadSearchCountRes;
 import com.maan.crm.res.ProspectBulkEditRes;
@@ -137,6 +140,14 @@ public interface ProspectService {
 	
 	// Get Lead Details List by client ref no
 	LeadDetailsGetAllRes getLeadDetailsList(LeadQuoteDetailsGetReq req);
+
+	List<LeadProductDetailsSaveReq> getLeadProdutDetailsList(LeadQuoteDetailsGetReq req);
+
+	List<Error> validateProspectProduct(ProspectProductRequest req);
+
+	ProspectPaymentSuccessRes saveProspectProduct(ProspectProductRequest req);
+
+	LeadProductEditRes getProspectProductList(LeadQuoteDetailsGetReq req);
 
 	
 	

@@ -13,6 +13,7 @@ import com.maan.crm.req.PolicyNomineeDetailsGetAllReq;
 import com.maan.crm.req.PolicyAdditionalDetailsGetReq;
 import com.maan.crm.req.PolicyAdditionalDetailsSaveReq;
 import com.maan.crm.req.PolicyBulkEditReq;
+import com.maan.crm.req.PolicyDataReq;
 import com.maan.crm.req.PolicyDetailsGetAllReq;
 import com.maan.crm.req.PolicyNomineeDetailsGetReq;
 import com.maan.crm.req.PolicyNomineeDetailsSaveReq;
@@ -111,6 +112,8 @@ public interface PolicyService {
 	//  Policy Search 
 	
 	PolicySearchRes searchPolicyDetails(PolicySearchReq req);
+
+	SuccessRes savePolicyData(PolicyDataReq req);
 
 	
 	// Policy Insert List

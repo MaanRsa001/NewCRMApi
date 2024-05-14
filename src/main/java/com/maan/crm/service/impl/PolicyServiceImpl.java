@@ -19,11 +19,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.ModelMap;
 
 import com.google.gson.Gson;
 import com.maan.crm.bean.ClaimLoginMaster;
-import com.maan.crm.bean.ClientAddressDetails;
 import com.maan.crm.bean.ClientDetails;
 import com.maan.crm.bean.InsuranceCompanyMaster;
 import com.maan.crm.bean.PolicyAccountsDetails;
@@ -32,6 +30,8 @@ import com.maan.crm.bean.PolicyAddOnId;
 import com.maan.crm.bean.PolicyAdditionalDetails;
 import com.maan.crm.bean.PolicyAdditionalDetailsId;
 import com.maan.crm.bean.PolicyAssuredDetails;
+import com.maan.crm.bean.PolicyCoverDetails;
+import com.maan.crm.bean.PolicyData;
 import com.maan.crm.bean.PolicyDetails;
 import com.maan.crm.bean.PolicyDetailsId;
 import com.maan.crm.bean.PolicyNomineeDetails;
@@ -39,7 +39,7 @@ import com.maan.crm.bean.PolicyNomineeDetailsId;
 import com.maan.crm.bean.PolicyPaymentDetails;
 import com.maan.crm.bean.PolicyPaymentDetailsId;
 import com.maan.crm.bean.PolicyRiderDetails;
-import com.maan.crm.bean.ProspectDetails;
+import com.maan.crm.bean.SequenceMaster;
 import com.maan.crm.notification.mail.dto.MailFramingReq;
 import com.maan.crm.notification.service.impl.MailThreadServiceImpl;
 import com.maan.crm.repository.ClaimLoginMasterRepository;
@@ -50,10 +50,14 @@ import com.maan.crm.repository.PolicyAccountsDetailsRepository;
 import com.maan.crm.repository.PolicyAddOnRepository;
 import com.maan.crm.repository.PolicyAdditionalDetailsRepository;
 import com.maan.crm.repository.PolicyAssuredDetailsRepository;
+import com.maan.crm.repository.PolicyCoverDetailsRepository;
+import com.maan.crm.repository.PolicyDataRepository;
 import com.maan.crm.repository.PolicyDetailsRepository;
 import com.maan.crm.repository.PolicyNomineeDetailsRepository;
 import com.maan.crm.repository.PolicyPaymentDetailsRepository;
 import com.maan.crm.repository.PolicyRiderDetailsRepository;
+import com.maan.crm.repository.SequenceMasterRepository;
+import com.maan.crm.req.LeadProductDetailsSaveReq;
 import com.maan.crm.req.PolicyAddOnGetAllReq;
 import com.maan.crm.req.PolicyAddOnGetReq;
 import com.maan.crm.req.PolicyAddOnSaveReq;
@@ -61,6 +65,7 @@ import com.maan.crm.req.PolicyAdditionalDetailsGetAllReq;
 import com.maan.crm.req.PolicyAdditionalDetailsGetReq;
 import com.maan.crm.req.PolicyAdditionalDetailsSaveReq;
 import com.maan.crm.req.PolicyBulkEditReq;
+import com.maan.crm.req.PolicyDataReq;
 import com.maan.crm.req.PolicyDetailsGetAllReq;
 import com.maan.crm.req.PolicyDetailsSaveReq;
 import com.maan.crm.req.PolicyNomineeDetailsGetAllReq;
@@ -141,6 +146,15 @@ public class PolicyServiceImpl implements PolicyService {
 
 	@Autowired
 	private TrackingServiceImpl trackService;
+	
+	@Autowired
+	private PolicyDataRepository policyDataRepo;
+	
+	@Autowired
+	private SequenceMasterRepository sequenceMasterRepo;
+	
+	@Autowired
+	private PolicyCoverDetailsRepository policyCoverDetailsRepo;
 
 	Gson json = new Gson();
 
@@ -1227,4 +1241,69 @@ public class PolicyServiceImpl implements PolicyService {
 	 * } res.setResponse("Suucess"); } catch (Exception e ) { e.printStackTrace();
 	 * log.info("Log Details",e.getMessage()); return null; } return res; }
 	 */
+
+	@Override
+	public SuccessRes savePolicyData(PolicyDataReq req) {
+		SuccessRes res = new SuccessRes();
+		ModelMapper mapper = new ModelMapper();
+		String policyId = " ";
+		try {
+			if(StringUtils.isNotBlank(req.getPolicyId())) {
+				policyId = req.getPolicyId();
+				PolicyData data = policyDataRepo.findByPolicyId(policyId);
+				if(data!=null) {
+					policyDataRepo.delete(data);
+				}
+				PolicyData map = mapper.map(req,PolicyData.class);
+				policyDataRepo.save(map);
+				
+				List<PolicyCoverDetails> oldCover = policyCoverDetailsRepo.findByPolicyId(policyId);
+				if(oldCover!=null && oldCover.size()>0) {
+					policyCoverDetailsRepo.deleteAll(oldCover);
+				}
+				List<LeadProductDetailsSaveReq> coverList = req.getLeadProdutList();
+				if(coverList!=null && coverList.size()>0) {
+					int sequence = 1;
+					for(LeadProductDetailsSaveReq request : coverList) {
+						PolicyCoverDetails map2 = mapper.map(request,PolicyCoverDetails.class);
+						map2.setPolicyId(policyId);
+						map2.setSequenceNo(sequence);
+						policyCoverDetailsRepo.save(map2);
+						sequence++;
+					}
+				}
+				res.setResponse("Updated Successfully ");
+				res.setSucessId(policyId);
+				
+			}else {
+				SequenceMaster bySequenceName = sequenceMasterRepo.findBySequenceName("POLICY_ID");
+				Integer sequenceValue = bySequenceName.getSequenceValue();
+				policyId = req.getProspectId()+"/" + sequenceValue;
+				
+				PolicyData map = mapper.map(req,PolicyData.class);
+				map.setPolicyId(policyId);
+				policyDataRepo.save(map);
+				
+				List<LeadProductDetailsSaveReq> coverList = req.getLeadProdutList();
+				if(coverList!=null && coverList.size()>0) {
+					int sequence = 1;
+					for(LeadProductDetailsSaveReq request : coverList) {
+						PolicyCoverDetails map2 = mapper.map(request,PolicyCoverDetails.class);
+						map2.setPolicyId(policyId);
+						map2.setSequenceNo(sequence);
+						policyCoverDetailsRepo.save(map2);
+						sequence++;
+					}
+				}
+				res.setResponse("Inserted Successfully  ");
+				res.setSucessId(policyId);
+				bySequenceName.setSequenceValue(sequenceValue + 1);
+				sequenceMasterRepo.save(bySequenceName);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return res;
+		}
+		return res;
+	}
 }

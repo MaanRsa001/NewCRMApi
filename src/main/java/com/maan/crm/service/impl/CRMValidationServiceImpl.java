@@ -42,6 +42,7 @@ import com.maan.crm.req.NotifTemplateMasterReq;
 import com.maan.crm.req.OldPolicySaveReq;
 import com.maan.crm.req.PolicyAccountsDetailsSaveReq;
 import com.maan.crm.req.PolicyAssuredDetailsSaveReq;
+import com.maan.crm.req.PolicyDataReq;
 import com.maan.crm.req.PolicyRiderDetailsSaveReq;
 import com.maan.crm.req.ProductDetailsGroupReq;
 import com.maan.crm.req.ProspectDetailsSaveReq;
@@ -1634,5 +1635,11 @@ public class CRMValidationServiceImpl implements CRMValidationService {
 	return errors;
 
 }
+
+	@Override
+	public List<Error> validatePolicyData(PolicyDataReq req) {
+		List<Error> errors = new ArrayList<Error>();
+		return errors;
+	}
 
 }

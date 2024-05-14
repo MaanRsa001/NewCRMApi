@@ -25,6 +25,7 @@ import com.maan.crm.req.NotifTemplateMasterReq;
 import com.maan.crm.req.OldPolicySaveReq;
 import com.maan.crm.req.PolicyAccountsDetailsSaveReq;
 import com.maan.crm.req.PolicyAssuredDetailsSaveReq;
+import com.maan.crm.req.PolicyDataReq;
 import com.maan.crm.req.PolicyRiderDetailsSaveReq;
 import com.maan.crm.req.ProductDetailsGroupReq;
 import com.maan.crm.req.ProspectDetailsSaveReq;
@@ -108,6 +109,8 @@ public interface CRMValidationService {
 	List<Error> validateupdateQuoteStatus(UpdateQuoteStatusReq req);
 
 	List<Error> validateDocTypeSaveReq(DocTypeSaveReq req);
+
+	List<Error> validatePolicyData(PolicyDataReq req);
 
 
 

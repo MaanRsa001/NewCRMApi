@@ -11,4 +11,6 @@ public interface LeadProductDetailsRepository extends JpaRepository<LeadProductD
 
 	List<LeadProductDetails> findByLeadId(String leadId);
     // You can add custom query methods if needed
+
+	List<LeadProductDetails> findByLeadIdOrderBySequenceNo(String leadId);
 }

@@ -53,6 +53,7 @@ import com.maan.crm.res.LeadSearchRes;
 import com.maan.crm.res.LeadViewRes;
 import com.maan.crm.res.OldPolicyRes;
 import com.maan.crm.res.SuccessRes;
+import com.maan.crm.res.LeadProductEditRes;
 import com.maan.crm.service.CRMValidationService;
 import com.maan.crm.service.LeadService;
 import com.maan.crm.service.PrintReqService;
@@ -484,6 +485,39 @@ public class LeadController {
 				}
 		}
 		
+//		// save product lead
+//		@PostMapping("/lead/productsave")
+//		@ApiOperation(value = "This method is to save lead product details")
+//		public ResponseEntity<CommonCrmRes> saveLeadProductDetails(@RequestBody LeadProductDetailsListReq req) {
+//			reqPrinter.reqPrint(req);
+//			CommonCrmRes data = new CommonCrmRes();
+//			List<Error> validation = entityService.validateCrmLeadProduct(req );
+//			//// validation
+//			if (validation != null && validation.size() != 0) {
+//				data.setCommonResponse(null);
+//				data.setIsError(true);
+//				data.setErrorMessage(validation);
+//				data.setMessage("Failed");
+//				return new ResponseEntity<CommonCrmRes>(data, HttpStatus.OK);
+//
+//
+//			} else {
+//				/////// save
+//
+//				CrmLeadSuccessRes res = entityService.saveCrmLeadProduct(req);
+//				data.setCommonResponse(res);
+//				data.setIsError(false);
+//				data.setErrorMessage(Collections.emptyList());
+//				data.setMessage("Success");
+//				if (res != null) {
+//					return new ResponseEntity<CommonCrmRes>(data, HttpStatus.CREATED);
+//				} else {
+//					return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//				}
+//			}
+//		}
+		
+		
 		// save product lead
 		@PostMapping("/lead/productsave")
 		@ApiOperation(value = "This method is to save lead product details")
@@ -515,6 +549,46 @@ public class LeadController {
 				}
 			}
 		}
+		
+		
+		// edit product lead
+		@PostMapping("/lead/productedit")
+		@ApiOperation(value = "This method is to edit lead product details")
+		public ResponseEntity<CommonCrmRes> editLeadProductDetails(@RequestBody LeadDetailsGetReq req) {
+			reqPrinter.reqPrint(req);
+			CommonCrmRes data = new CommonCrmRes();
+			LeadProductEditRes res = entityService.editCrmLeadProduct(req);
+			data.setCommonResponse(res);
+			data.setIsError(false);
+			data.setErrorMessage(Collections.emptyList());
+			data.setMessage("Success");
+			if (res != null) {
+				return new ResponseEntity<CommonCrmRes>(data, HttpStatus.CREATED);
+			} else {
+				return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			}
+
+		}
+		
+		// Get All Lead With Count
+		@PostMapping("/getallleadproduct")
+		@ApiOperation("This method is to Get all Lead product with count")
+		public ResponseEntity<CommonCrmRes> getallLeadProductCount(@RequestBody LeadGetallCountReq req) {
+			reqPrinter.reqPrint(req);
+			CommonCrmRes data = new CommonCrmRes();
+			LeadGetAllCountRes res = entityService.getallLeadProduct(req);
+			data.setCommonResponse(res);
+			data.setIsError(false);
+			data.setMessage("Success");
+			data.setErrorMessage(Collections.emptyList());
+			if (res != null) {
+				return new ResponseEntity<CommonCrmRes>(data, HttpStatus.CREATED);
+			} else {
+				return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			}
+
+		}
+
 }
 
 

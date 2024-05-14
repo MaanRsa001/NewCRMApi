@@ -19,6 +19,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CrmLeadRes {
+	
+	@JsonProperty("ProspectId")
+	private String ProspectId;
 
 	@JsonProperty("LeadId")
 	private String leadId;

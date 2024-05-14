@@ -23,6 +23,7 @@ import com.maan.crm.req.PolicyAssuredDetailsGetAllReq;
 import com.maan.crm.req.PolicyAssuredDetailsGetReq;
 import com.maan.crm.req.PolicyAssuredDetailsSaveReq;
 import com.maan.crm.req.PolicyBulkEditReq;
+import com.maan.crm.req.PolicyDataReq;
 import com.maan.crm.req.PolicyDetailsGetAllReq;
 import com.maan.crm.req.PolicyDetailsSaveReq;
 import com.maan.crm.req.PolicyNomineeDetailsGetAllReq;
@@ -39,7 +40,6 @@ import com.maan.crm.res.PolicyAccountsDetailsRes;
 import com.maan.crm.res.PolicyAddOnGetAllRes;
 import com.maan.crm.res.PolicyAdditionalDetailsGetAllRes;
 import com.maan.crm.res.PolicyAssuredDetailsRes;
-import com.maan.crm.res.PolicyDetailsGetAllRes;
 import com.maan.crm.res.PolicyGetAllCountRes;
 import com.maan.crm.res.PolicyNomineeDetailsGetAllRes;
 import com.maan.crm.res.PolicyPaymentGetAllRes;
@@ -757,5 +757,40 @@ public class PolicyController {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 	}
+	
 */
+	// Save list of Policy Rider Details
+		@PostMapping("/savepolicydata")
+		@ApiOperation(value = "This method is to Save Policy Details")
+		public ResponseEntity<CommonCrmRes> savePolicyData(@RequestBody PolicyDataReq req) {
+
+			reqPrinter.reqPrint("Printer Request --->" + req);
+			CommonCrmRes data = new CommonCrmRes();
+
+			// Validation
+
+			List<Error> validation = crmvalidation.validatePolicyData(req);
+			if (validation != null && validation.size() != 0) {
+
+				data.setCommonResponse(null);
+				data.setIsError(true);
+				data.setErrorMessage(validation);
+				data.setMessage("Failed");
+
+				return new ResponseEntity<CommonCrmRes>(data, HttpStatus.OK);
+
+			} else { // Save
+				SuccessRes res = Service.savePolicyData(req);
+				data.setCommonResponse(res);
+				data.setIsError(false);
+				data.setErrorMessage(Collections.emptyList());
+				data.setMessage("Success");
+
+				if (res != null) {
+					return new ResponseEntity<CommonCrmRes>(data, HttpStatus.CREATED);
+				} else {
+					return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+				}
+			}
+		}
 }

@@ -12,14 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.maan.crm.req.ClientBulkEditReq;
+import com.maan.crm.document.req.ProspectProductRequest;
 import com.maan.crm.req.LeadDetailsJsonTempReq;
+import com.maan.crm.req.LeadProductDetailsSaveReq;
 import com.maan.crm.req.LeadQuoteDetailsGetReq;
 import com.maan.crm.req.ProspectBulkEditReq;
 import com.maan.crm.req.ProspectDetailsGetAllReq;
 import com.maan.crm.req.ProspectDetailsSaveReq;
-import com.maan.crm.req.ProspectOldPolicyDetailsSaveReq;
-import com.maan.crm.req.ProspectPaymentSaveReq;
 import com.maan.crm.req.ProspectQuotationAddOnSaveReq;
 import com.maan.crm.req.ProspectQuotationInsurerSaveReq;
 import com.maan.crm.req.ProspectQuotationPolicyAccountsSaveReq;
@@ -29,10 +28,9 @@ import com.maan.crm.req.ProspectReq;
 import com.maan.crm.req.ProspectSearchReq;
 import com.maan.crm.req.ProspectsQuotationOtherDetailsSaveReq;
 import com.maan.crm.res.CommonCrmRes;
+import com.maan.crm.res.LeadDetailsGetAllRes;
+import com.maan.crm.res.LeadProductEditRes;
 import com.maan.crm.res.LeadQuoteDetailsGetRes;
-import com.maan.crm.res.LeadSearchCountRes;
-import com.maan.crm.res.ProspectBulkEditRes;
-import com.maan.crm.res.ProspectDetailsRes;
 import com.maan.crm.res.ProspectGetAllCountRes;
 import com.maan.crm.res.ProspectPaymentRes;
 import com.maan.crm.res.ProspectPaymentSuccessRes;
@@ -41,7 +39,6 @@ import com.maan.crm.res.ProspectQuotationSuccessRes;
 import com.maan.crm.res.ProspectRes;
 import com.maan.crm.res.ProspectSearchRes;
 import com.maan.crm.res.SuccessRes;
-import com.maan.crm.res.LeadDetailsGetAllRes;
 import com.maan.crm.service.CRMValidationService;
 import com.maan.crm.service.PrintReqService;
 import com.maan.crm.service.ProspectService;
@@ -696,6 +693,75 @@ public class ProspectController {
 		
 		CommonCrmRes data = new CommonCrmRes();
 		LeadDetailsGetAllRes res = Service.getLeadDetailsList(req);
+				data.setCommonResponse(res);
+				data.setErrorMessage(Collections.emptyList());
+				data.setIsError(false);
+				data.setMessage("Success");
+				
+				if(res!=null) {
+					return new ResponseEntity<CommonCrmRes>(data, HttpStatus.CREATED);
+					}
+				else {
+					return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+				}	
+	}
+	
+	@PostMapping("/getleadprodut/byleadid")
+	@ApiOperation(value = "This Method is to get all leads product by a client")
+	public ResponseEntity<CommonCrmRes> leadProductList(@RequestBody LeadQuoteDetailsGetReq req){
+		
+		CommonCrmRes data = new CommonCrmRes();
+		List<LeadProductDetailsSaveReq> res = Service.getLeadProdutDetailsList(req);
+				data.setCommonResponse(res);
+				data.setErrorMessage(Collections.emptyList());
+				data.setIsError(false);
+				data.setMessage("Success");
+				
+				if(res!=null) {
+					return new ResponseEntity<CommonCrmRes>(data, HttpStatus.CREATED);
+					}
+				else {
+					return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+				}	
+	}
+	
+	@PostMapping(value = "/saveprospectproduct")
+	@ApiOperation(value = "This method is to Save prospect product Details")
+	// Insert
+	public ResponseEntity<CommonCrmRes> saveProspectProduct(@RequestBody ProspectProductRequest req) {
+		reqPrinter.reqPrint(req);
+		CommonCrmRes data = new CommonCrmRes();
+		List<Error> validation = Service.validateProspectProduct(req);
+		//// validation
+		if (validation != null && validation.size() != 0) {
+			data.setCommonResponse(null);
+			data.setIsError(true);
+			data.setErrorMessage(validation);
+			data.setMessage("Failed");
+			return new ResponseEntity<CommonCrmRes>(data, HttpStatus.OK);
+
+		} else {
+			/////// save
+
+			ProspectPaymentSuccessRes res = Service.saveProspectProduct(req);
+			data.setCommonResponse(res);
+			data.setIsError(false);
+			data.setErrorMessage(Collections.emptyList());
+			data.setMessage("Success");
+			if (res != null) {
+				return new ResponseEntity<CommonCrmRes>(data, HttpStatus.CREATED);
+			} else {
+				return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			}
+		}
+	}
+	
+	@PostMapping("/getprospectbyid")
+	@ApiOperation(value = "This Method is to get all leads product by a client")
+	public ResponseEntity<CommonCrmRes> getProspectProductList(@RequestBody LeadQuoteDetailsGetReq req){
+		
+		CommonCrmRes data = new CommonCrmRes();
+		LeadProductEditRes res = Service.getProspectProductList(req);
 				data.setCommonResponse(res);
 				data.setErrorMessage(Collections.emptyList());
 				data.setIsError(false);

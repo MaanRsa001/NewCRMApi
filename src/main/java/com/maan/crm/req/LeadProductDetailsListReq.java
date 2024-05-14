@@ -20,6 +20,53 @@ public class LeadProductDetailsListReq {
     @JsonProperty("ClientName")
     private String clientName;
     
+    @JsonProperty("InsCompanyId")
+    private String insCompanyId;
+	
+    @JsonProperty("BusinessType")
+    private String businessType;
+
+    @JsonProperty("BusinessTypeId")
+    private Integer businessTypeId;
+
+    @JsonProperty("ClassDescription")
+    private String classDescription;
+
+    @JsonProperty("ClassId")
+    private String classId;
+
+    @JsonProperty("PolicyType")
+    private String policyType;
+
+    @JsonProperty("PolicyTypeId")
+    private Integer policyTypeId;
+
+    @JsonProperty("Source")
+    private String source;
+
+    @JsonProperty("SourceId")
+    private Integer sourceId;
+
+    @JsonProperty("LeadGenDate")
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private Date leadGenDate;
+
+    @JsonProperty("AssignToGroup")
+    private String assignToGroup;
+
+    @JsonProperty("AssignToGroupId")
+    private Integer assignToGroupId;
+
+    @JsonProperty("AssignToUser")
+    private String assignToUser;
+
+    @JsonProperty("AssignToUserId")
+    private String assignToUserId;
+
+    @JsonProperty("DueDate")
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private Date dueDate;
+    
     @JsonProperty("LeadProductList")
     private List<LeadProductDetailsSaveReq> leadProdutList;
     
@@ -35,9 +82,6 @@ public class LeadProductDetailsListReq {
 
     @JsonProperty("Status")
     private String status;
-    
-    @JsonProperty("InsuranceId")
-    private String insCompanyId;
 
     @JsonProperty("BranchCode")
     private String branchCode;

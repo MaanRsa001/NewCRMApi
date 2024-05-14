@@ -52,6 +52,8 @@ import com.maan.crm.bean.PolicyDetails;
 import com.maan.crm.bean.QuoteDetails;
 import com.maan.crm.bean.SequenceMaster;
 import com.maan.crm.bean.VehicleDetails;
+import com.maan.crm.bean.LeadProduct;
+import com.maan.crm.bean.ProductCoverDetails;
 import com.maan.crm.notification.mail.dto.MailFramingReq;
 import com.maan.crm.notification.service.impl.MailThreadServiceImpl;
 import com.maan.crm.repository.ClaimLoginMasterRepository;
@@ -70,6 +72,8 @@ import com.maan.crm.repository.TrackingDetailsRepository;
 import com.maan.crm.repository.VehicleDetailsRepository;
 import com.maan.crm.repository.SequenceMasterRepository;
 import com.maan.crm.repository.LeadProductDetailsRepository;
+import com.maan.crm.repository.LeadProductRepository;
+import com.maan.crm.repository.ProductCoverDetailsRepository;
 import com.maan.crm.req.ClientBasicDetails;
 import com.maan.crm.req.ClientLeadCountReq;
 import com.maan.crm.req.ClientLeadReq;
@@ -108,6 +112,7 @@ import com.maan.crm.res.DropDownRes;
 import com.maan.crm.res.EnquiryGridRes;
 import com.maan.crm.res.LeadDetailsJsonTempRes;
 import com.maan.crm.res.LeadGetAllCountRes;
+import com.maan.crm.res.LeadProductEditRes;
 import com.maan.crm.res.LeadSearchCountRes;
 import com.maan.crm.res.LeadSearchRes;
 import com.maan.crm.res.LeadViewRes;
@@ -118,6 +123,7 @@ import com.maan.crm.res.QuoteGridRes;
 import com.maan.crm.res.SuccessRes;
 import com.maan.crm.res.VehicleDetailsGridRes;
 import com.maan.crm.res.VehicleDetailsRes;
+import com.maan.crm.res.ClientDetailsEditRes;
 import com.maan.crm.service.LeadService;
 import com.maan.crm.service.VehicleDetailsService;
 import com.maan.crm.util.error.Error;
@@ -167,6 +173,12 @@ public class LeadServiceImpl implements LeadService {
 	
 	@Autowired
 	private LeadProductDetailsRepository leadProductDetailsRepo;
+	
+	@Autowired
+	private LeadProductRepository leadProductRepo;
+	
+	@Autowired
+	private ProductCoverDetailsRepository productCoverDetailsRepo;
 	
 	@PersistenceContext
 	private EntityManager em;
@@ -1738,6 +1750,175 @@ public class LeadServiceImpl implements LeadService {
 		return errors;
 	}
 
+//	@Override
+//	@Transactional
+//	public CrmLeadSuccessRes saveCrmLeadProduct(LeadProductDetailsListReq req) {
+//
+//		CrmLeadSuccessRes res = new CrmLeadSuccessRes();
+//
+//		ModelMapper mapper = new ModelMapper();
+//		String leadId = " ";
+//		String createdBy =" ";
+//		Date entryDate = null;
+//		ArrayList<LeadProductDetails> LPDList = new ArrayList<>(); 
+//		try {
+//			String clientRefNo = " ";
+//			if(StringUtils.isNotBlank(req.getClientRefNo())) {
+//				clientRefNo = req.getClientRefNo();
+//			}
+//			if(StringUtils.isNotBlank(req.getLeadId())) {
+//				leadId=req.getLeadId();
+//				List<LeadProductDetails> byLeadId = leadProductDetailsRepo.findByLeadId(leadId);
+//				if(byLeadId!=null) {
+//					createdBy = byLeadId.get(0).getCreatedBy();
+//					entryDate = byLeadId.get(0).getEntryDate();
+//					leadProductDetailsRepo.deleteAll(byLeadId);
+//					leadProductDetailsRepo.flush();
+//					
+//				}
+//	
+//				List<LeadProductDetailsSaveReq> leadProdutList = req.getLeadProdutList();
+//				if(leadProdutList != null && leadProdutList.size()>0) {
+//					int sequence = 1;
+//					for(LeadProductDetailsSaveReq product : leadProdutList ) {
+//						
+//						LeadProductDetails details = mapper.map(product, LeadProductDetails.class);
+//						details.setLeadId(leadId);
+//						details.setClientRefNo(clientRefNo);
+//						details.setClientName(req.getClientName());
+//						details.setCreatedBy(createdBy);
+//						details.setEntryDate(entryDate);
+//						details.setBranchCode(req.getBranchCode());
+//						details.setRegionCode(req.getRegionCode());
+//						details.setUpdatedBy(req.getUpdatedBy());
+//						details.setUpdatedDate(new Date());	
+//						details.setSequenceNo(sequence);
+//						leadProductDetailsRepo.saveAndFlush(details);
+//						
+//					    LPDList.add(details);
+//						sequence++;
+//					}
+//					
+//				}
+//				//leadProductDetailsRepo.saveAll(LPDList);
+//				res.setResponse("Updated Successfully ");
+//				res.setLeadid(req.getLeadId());
+//				log.info("Saved Details is ---> " + json.toJson(LPDList));
+//				
+//				// Tracking
+//				TrackingReq treq = new TrackingReq();
+//				treq.setCreatedBy(req.getCreatedBy());
+//				treq.setBranchCode(req.getBranchCode());
+//				treq.setEntryDate(entryDate);
+//				treq.setInsCompanyId(req.getInsCompanyId());
+//				treq.setRegionCode(req.getRegionCode());
+//				treq.setClientRefNo(clientRefNo);
+//				treq.setClientName(req.getClientName());
+//				treq.setLeadId(leadId);
+//				treq.setStatus("Lead");
+//				treq.setStatusDescription("Lead Updated Successful");
+//				trackService.tracking(treq);
+//
+//			}
+//			else {
+//				SequenceMaster bySequenceName = sequenceMasterRepo.findBySequenceName("LEAD_ID");
+//				Integer sequenceValue = bySequenceName.getSequenceValue();
+//				leadId = "L" + sequenceValue;
+//				List<LeadProductDetailsSaveReq> leadProdutList = req.getLeadProdutList();
+//				if(leadProdutList != null && leadProdutList.size()>0) {
+//					int sequence = 1;
+//					for(LeadProductDetailsSaveReq product : leadProdutList ) {
+//						
+//						LeadProductDetails details = mapper.map(product, LeadProductDetails.class);
+//						details.setLeadId(leadId);
+//						details.setClientRefNo(clientRefNo);
+//						details.setClientName(req.getClientName());
+//						details.setCreatedBy(req.getCreatedBy());
+//						details.setEntryDate(new Date());
+//						details.setBranchCode(req.getBranchCode());
+//						details.setRegionCode(req.getRegionCode());
+//						details.setSequenceNo(sequence);
+//						LPDList.add(details);
+//						sequence++;
+//					}
+//					
+//				}
+//				leadProductDetailsRepo.saveAllAndFlush(LPDList);
+//				res.setResponse("Inserted Successfully ");
+//				res.setLeadid(leadId);
+//				
+//				log.info("Saved Details is ---> " + json.toJson(LPDList));
+//				bySequenceName.setSequenceValue(sequenceValue + 1);
+//				sequenceMasterRepo.save(bySequenceName);
+//				// Tracking
+//				TrackingReq treq = new TrackingReq();
+//				treq.setCreatedBy(req.getCreatedBy());
+//				treq.setBranchCode(req.getBranchCode());
+//				treq.setEntryDate(entryDate);
+//				treq.setInsCompanyId(req.getInsCompanyId());
+//				treq.setRegionCode(req.getRegionCode());
+//				treq.setClientRefNo(clientRefNo);
+//				treq.setClientName(req.getClientName());
+//				treq.setLeadId(leadId);
+//				treq.setStatus("Lead");
+//				treq.setStatusDescription("Lead Inserted Successful");
+//				trackService.tracking(treq);
+//
+//			}
+//			/*
+//			 * // Save Tracking SimpleDateFormat tra = new
+//			 * SimpleDateFormat("yyMMddhhmmssSSS");
+//			 * 
+//			 * TrackingDetails saveTracking = new TrackingDetails(); Date today = new
+//			 * Date(); String trackingId = tra.format(today);
+//			 * saveTracking.setTrackingId(trackingId);
+//			 * saveTracking.setInsCompanyId(req.getInsCompanyId());
+//			 * saveTracking.setCreatedBy(req.getCreatedBy()); //
+//			 * saveTracking.setRemarks(req.getRemarks()); saveTracking.setStatus("Lead");
+//			 * saveTracking.setEntryDate(today);
+//			 * 
+//			 * //trackRepo.save(saveTracking);
+//			 */
+//			// Thread To Trigger Mail
+//			ClientDetails clientDetails = clientrepo.findByClientRefNo(clientRefNo);
+//			if(clientDetails!=null ) {
+//				clientDetails.setLastVisitedDate(new Date());
+//				clientrepo.saveAndFlush(clientDetails);
+//				/*
+//				 * InsuranceCompanyMaster companyData =
+//				 * insRepo.findByInsId(req.getInsCompanyId().toString()); ClaimLoginMaster
+//				 * loginData = loginRepo.findByLoginId(req.getCreatedBy());
+//				 * 
+//				 * List<String> ccMails = new ArrayList<String>();
+//				 * ccMails.add(companyData.getInsEmail()); ccMails.add(loginData.getUserMail());
+//				 * 
+//				 * List<String> toMails = new ArrayList<String>();
+//				 * toMails.add(clientDetails.getEmailId());
+//				 * 
+//				 * Map<String, Object> keys = new HashMap<String, Object>(); keys.put("LEAD_ID",
+//				 * leadId == null ? "" : leadId.toString());
+//				 * 
+//				 * // Set Mail Request MailFramingReq mailFrameReq = new MailFramingReq();
+//				 * mailFrameReq.setInsId(req.getInsCompanyId().toString());
+//				 * mailFrameReq.setNotifTemplateId("LEAD_INFO"); mailFrameReq.setKeys(keys);
+//				 * mailFrameReq.setMailCc(ccMails); mailFrameReq.setMailTo(toMails);
+//				 * mailFrameReq.setMailRegards(companyData.getRegards());
+//				 * mailFrameReq.setStatus(res.getResponse());
+//				 * 
+//				 * log.info("{ Mail Pushed SuccessFully . LeadId is ---> " + leadId +
+//				 * " ; ClientRefNo is --->" + req.getClientRefNo() + " }"); //
+//				 * mailFrameService.sendSms(mailReq);
+//				 * mailThreadService.threadToSendMail(mailFrameReq);
+//				 */			}
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			log.info(e.getMessage());
+//			return res;
+//		}
+//		return res;
+//
+//	}
 	@Override
 	@Transactional
 	public CrmLeadSuccessRes saveCrmLeadProduct(LeadProductDetailsListReq req) {
@@ -1748,7 +1929,7 @@ public class LeadServiceImpl implements LeadService {
 		String leadId = " ";
 		String createdBy =" ";
 		Date entryDate = null;
-		ArrayList<LeadProductDetails> LPDList = new ArrayList<>(); 
+		ArrayList<LeadProduct> LPDList = new ArrayList<>(); 
 		try {
 			String clientRefNo = " ";
 			if(StringUtils.isNotBlank(req.getClientRefNo())) {
@@ -1756,34 +1937,35 @@ public class LeadServiceImpl implements LeadService {
 			}
 			if(StringUtils.isNotBlank(req.getLeadId())) {
 				leadId=req.getLeadId();
-				List<LeadProductDetails> byLeadId = leadProductDetailsRepo.findByLeadId(leadId);
-				if(byLeadId!=null) {
-					createdBy = byLeadId.get(0).getCreatedBy();
-					entryDate = byLeadId.get(0).getEntryDate();
-					leadProductDetailsRepo.deleteAll(byLeadId);
-					leadProductDetailsRepo.flush();
+				List<LeadProduct> leadproduct = leadProductRepo.findByLeadId(leadId);
+				if(leadproduct != null && leadproduct.size()>0) {
+					leadProductRepo.deleteAll(leadproduct);
+				}
+				LeadProduct map = mapper.map(req,LeadProduct.class);
+				map.setLeadId(leadId);
+				map.setClassDesc(req.getClassDescription());
+				leadProductRepo.saveAndFlush(map);
+				
+				List<ProductCoverDetails> coverproduct = productCoverDetailsRepo.findByLeadId(leadId);
+				if(coverproduct!=null && coverproduct.size()>0) {
+					productCoverDetailsRepo.deleteAll(coverproduct);
 					
 				}
-	
 				List<LeadProductDetailsSaveReq> leadProdutList = req.getLeadProdutList();
 				if(leadProdutList != null && leadProdutList.size()>0) {
 					int sequence = 1;
 					for(LeadProductDetailsSaveReq product : leadProdutList ) {
 						
-						LeadProductDetails details = mapper.map(product, LeadProductDetails.class);
+						ProductCoverDetails details = mapper.map(product, ProductCoverDetails.class);
 						details.setLeadId(leadId);
 						details.setClientRefNo(clientRefNo);
-						details.setClientName(req.getClientName());
-						details.setCreatedBy(createdBy);
 						details.setEntryDate(entryDate);
-						details.setBranchCode(req.getBranchCode());
-						details.setRegionCode(req.getRegionCode());
-						details.setUpdatedBy(req.getUpdatedBy());
-						details.setUpdatedDate(new Date());	
 						details.setSequenceNo(sequence);
-						leadProductDetailsRepo.saveAndFlush(details);
-						
-					    LPDList.add(details);
+						details.setBusinessTypeId(req.getBusinessTypeId());
+						details.setClassId(req.getClassId());
+						details.setPolicyTypeId(req.getPolicyTypeId());
+						details.setEntryDate(new Date());
+						productCoverDetailsRepo.saveAndFlush(details);
 						sequence++;
 					}
 					
@@ -1792,112 +1974,46 @@ public class LeadServiceImpl implements LeadService {
 				res.setResponse("Updated Successfully ");
 				res.setLeadid(req.getLeadId());
 				log.info("Saved Details is ---> " + json.toJson(LPDList));
-				
-				// Tracking
-				TrackingReq treq = new TrackingReq();
-				treq.setCreatedBy(req.getCreatedBy());
-				treq.setBranchCode(req.getBranchCode());
-				treq.setEntryDate(entryDate);
-				treq.setInsCompanyId(req.getInsCompanyId());
-				treq.setRegionCode(req.getRegionCode());
-				treq.setClientRefNo(clientRefNo);
-				treq.setClientName(req.getClientName());
-				treq.setLeadId(leadId);
-				treq.setStatus("Lead");
-				treq.setStatusDescription("Lead Updated Successful");
-				trackService.tracking(treq);
 
 			}
 			else {
 				SequenceMaster bySequenceName = sequenceMasterRepo.findBySequenceName("LEAD_ID");
 				Integer sequenceValue = bySequenceName.getSequenceValue();
 				leadId = "L" + sequenceValue;
+				LeadProduct map = mapper.map(req,LeadProduct.class);
+				map.setLeadId(leadId);
+				map.setClassDesc(req.getClassDescription());
+				leadProductRepo.saveAndFlush(map);
+				
+				
 				List<LeadProductDetailsSaveReq> leadProdutList = req.getLeadProdutList();
 				if(leadProdutList != null && leadProdutList.size()>0) {
 					int sequence = 1;
 					for(LeadProductDetailsSaveReq product : leadProdutList ) {
 						
-						LeadProductDetails details = mapper.map(product, LeadProductDetails.class);
+						ProductCoverDetails details = mapper.map(product, ProductCoverDetails.class);
 						details.setLeadId(leadId);
 						details.setClientRefNo(clientRefNo);
-						details.setClientName(req.getClientName());
-						details.setCreatedBy(req.getCreatedBy());
-						details.setEntryDate(new Date());
-						details.setBranchCode(req.getBranchCode());
-						details.setRegionCode(req.getRegionCode());
+						details.setEntryDate(entryDate);
 						details.setSequenceNo(sequence);
-						LPDList.add(details);
+						details.setBusinessTypeId(req.getBusinessTypeId());
+						details.setClassId(req.getClassId());
+						details.setPolicyTypeId(req.getPolicyTypeId());
+						details.setEntryDate(new Date());
+						productCoverDetailsRepo.saveAndFlush(details);
 						sequence++;
 					}
 					
 				}
-				leadProductDetailsRepo.saveAllAndFlush(LPDList);
+				
 				res.setResponse("Inserted Successfully ");
 				res.setLeadid(leadId);
 				
 				log.info("Saved Details is ---> " + json.toJson(LPDList));
 				bySequenceName.setSequenceValue(sequenceValue + 1);
 				sequenceMasterRepo.save(bySequenceName);
-				// Tracking
-				TrackingReq treq = new TrackingReq();
-				treq.setCreatedBy(req.getCreatedBy());
-				treq.setBranchCode(req.getBranchCode());
-				treq.setEntryDate(entryDate);
-				treq.setInsCompanyId(req.getInsCompanyId());
-				treq.setRegionCode(req.getRegionCode());
-				treq.setClientRefNo(clientRefNo);
-				treq.setClientName(req.getClientName());
-				treq.setLeadId(leadId);
-				treq.setStatus("Lead");
-				treq.setStatusDescription("Lead Inserted Successful");
-				trackService.tracking(treq);
 
 			}
-			/*
-			 * // Save Tracking SimpleDateFormat tra = new
-			 * SimpleDateFormat("yyMMddhhmmssSSS");
-			 * 
-			 * TrackingDetails saveTracking = new TrackingDetails(); Date today = new
-			 * Date(); String trackingId = tra.format(today);
-			 * saveTracking.setTrackingId(trackingId);
-			 * saveTracking.setInsCompanyId(req.getInsCompanyId());
-			 * saveTracking.setCreatedBy(req.getCreatedBy()); //
-			 * saveTracking.setRemarks(req.getRemarks()); saveTracking.setStatus("Lead");
-			 * saveTracking.setEntryDate(today);
-			 * 
-			 * //trackRepo.save(saveTracking);
-			 */
-			// Thread To Trigger Mail
-			ClientDetails clientDetails = clientrepo.findByClientRefNo(clientRefNo);
-			if(clientDetails!=null ) {
-				clientDetails.setLastVisitedDate(new Date());
-				clientrepo.saveAndFlush(clientDetails);
-				/*
-				 * InsuranceCompanyMaster companyData =
-				 * insRepo.findByInsId(req.getInsCompanyId().toString()); ClaimLoginMaster
-				 * loginData = loginRepo.findByLoginId(req.getCreatedBy());
-				 * 
-				 * List<String> ccMails = new ArrayList<String>();
-				 * ccMails.add(companyData.getInsEmail()); ccMails.add(loginData.getUserMail());
-				 * 
-				 * List<String> toMails = new ArrayList<String>();
-				 * toMails.add(clientDetails.getEmailId());
-				 * 
-				 * Map<String, Object> keys = new HashMap<String, Object>(); keys.put("LEAD_ID",
-				 * leadId == null ? "" : leadId.toString());
-				 * 
-				 * // Set Mail Request MailFramingReq mailFrameReq = new MailFramingReq();
-				 * mailFrameReq.setInsId(req.getInsCompanyId().toString());
-				 * mailFrameReq.setNotifTemplateId("LEAD_INFO"); mailFrameReq.setKeys(keys);
-				 * mailFrameReq.setMailCc(ccMails); mailFrameReq.setMailTo(toMails);
-				 * mailFrameReq.setMailRegards(companyData.getRegards());
-				 * mailFrameReq.setStatus(res.getResponse());
-				 * 
-				 * log.info("{ Mail Pushed SuccessFully . LeadId is ---> " + leadId +
-				 * " ; ClientRefNo is --->" + req.getClientRefNo() + " }"); //
-				 * mailFrameService.sendSms(mailReq);
-				 * mailThreadService.threadToSendMail(mailFrameReq);
-				 */			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1907,5 +2023,78 @@ public class LeadServiceImpl implements LeadService {
 		return res;
 
 	}
+
+	@Override
+	public LeadProductEditRes editCrmLeadProduct(LeadDetailsGetReq req) {
+		
+		LeadProductEditRes res = new LeadProductEditRes();
+		ModelMapper mapper = new ModelMapper();
+		String leadId = " ";
+		String clientRefNo = " ";
+		try {
+			if(StringUtils.isNotBlank(req.getLeadId())) {
+				leadId=req.getLeadId();
+			}
+			List<LeadProduct> leadproduct = leadProductRepo.findByLeadId(leadId);
+			if(leadproduct != null && leadproduct.size()>0) {
+				LeadProductDetailsListReq map = mapper.map(leadproduct.get(0),LeadProductDetailsListReq.class);
+				
+				List<ProductCoverDetails> coverproduct = productCoverDetailsRepo.findByLeadId(leadId);
+				if(coverproduct!=null && coverproduct.size()>0) {
+					List<LeadProductDetailsSaveReq> map2List = new ArrayList<>();
+					for(ProductCoverDetails pcd : coverproduct) {
+						LeadProductDetailsSaveReq map2 = mapper.map(pcd,LeadProductDetailsSaveReq.class);
+						map2List.add(map2);
+					}
+					
+					map.setLeadProdutList(map2List);
+				}
+				
+				res.setLeadProductList(map);
+				clientRefNo = map.getClientRefNo();
+				ClientDetails clientDetails = clientrepo.findByClientRefNo(clientRefNo);
+				if(clientDetails!=null ) {
+					ClientDetailsEditRes clientDetailsRes = mapper.map(clientDetails,ClientDetailsEditRes.class);
+					res.setClientDetails(clientDetailsRes);
+			    }
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return res;
+	}
+
+	@Override
+	public LeadGetAllCountRes getallLeadProduct(LeadGetallCountReq req) {
+		LeadGetAllCountRes res = new LeadGetAllCountRes();
+		ModelMapper mapper = new ModelMapper();
+		mapper.getConfiguration().setAmbiguityIgnored(true);
+		
+		try {
+			Integer limit = StringUtils.isBlank(req.getLimit()) ? 0 : Integer.valueOf(req.getLimit());
+			Integer offset = StringUtils.isBlank(req.getOffset()) ? 100 : Integer.valueOf(req.getOffset());
+			Pageable paging = PageRequest.of(limit, offset);
+
+			// Find All
+			Page<LeadProduct> leadDetails = leadProductRepo.findByInsCompanyIdAndBranchCodeOrderByUpdatedDateDesc(
+					paging, req.getInsId(), req.getBranchCode());
+			Long count  = leadProductRepo.countByInsCompanyIdAndBranchCode(req.getInsId(),req.getBranchCode());
+			
+			List<CrmLeadRes> resList = new ArrayList<CrmLeadRes>();
+			List<LeadProduct> content = leadDetails.getContent();
+			for(LeadProduct lead : content) {
+				CrmLeadRes map = mapper.map(lead,CrmLeadRes.class);
+				resList.add(map);
+			}
+			res.setLeadCount(count);
+			res.setLeadDetails(resList);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return res;
+	}	
 
 }

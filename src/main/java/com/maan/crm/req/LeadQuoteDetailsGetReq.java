@@ -11,6 +11,8 @@ public class LeadQuoteDetailsGetReq {
 	private String leadId ;
 	@JsonProperty("ClientRefNo")
 	private String clientRefNo ;
+	@JsonProperty("ProspectId")
+	private String prospectId ;
 /*	@JsonProperty("ReferenceNo")
 	private String referenceNo ;
 	

@@ -36,6 +36,7 @@ import com.maan.crm.res.CrmReDirectLinkRes;
 import com.maan.crm.res.DropDownRes;
 import com.maan.crm.res.LeadDetailsJsonTempRes;
 import com.maan.crm.res.LeadGetAllCountRes;
+import com.maan.crm.res.LeadProductEditRes;
 import com.maan.crm.res.LeadSearchCountRes;
 import com.maan.crm.res.LeadSearchRes;
 import com.maan.crm.res.LeadViewRes;
@@ -121,6 +122,10 @@ public interface LeadService {
 	List<Error> validateCrmLeadProduct(LeadProductDetailsListReq req);
 
 	CrmLeadSuccessRes saveCrmLeadProduct(LeadProductDetailsListReq req);
+
+	LeadProductEditRes editCrmLeadProduct(LeadDetailsGetReq req);
+
+	LeadGetAllCountRes getallLeadProduct(LeadGetallCountReq req);
 
 
 

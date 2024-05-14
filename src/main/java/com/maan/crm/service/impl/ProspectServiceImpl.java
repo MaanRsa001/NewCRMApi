@@ -7,17 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -34,17 +23,19 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.gson.Gson;
 import com.maan.crm.bean.ClaimLoginMaster;
 import com.maan.crm.bean.ClientDetails;
-import com.maan.crm.bean.EnquiryDetails;
 import com.maan.crm.bean.InsuranceCompanyMaster;
 import com.maan.crm.bean.LeadDetails;
+import com.maan.crm.bean.LeadProduct;
 import com.maan.crm.bean.OldPolicyDetails;
-import com.maan.crm.bean.PolicyDetails;
+import com.maan.crm.bean.ProductCoverDetails;
 import com.maan.crm.bean.ProspectDetails;
 import com.maan.crm.bean.ProspectDetailsId;
 import com.maan.crm.bean.ProspectOldPolicyDetails;
 import com.maan.crm.bean.ProspectOldPolicyDetailsId;
 import com.maan.crm.bean.ProspectPaymentDetails;
 import com.maan.crm.bean.ProspectPaymentDetailsId;
+import com.maan.crm.bean.ProspectProduct;
+import com.maan.crm.bean.ProspectProductCover;
 import com.maan.crm.bean.ProspectQuotationAddOn;
 import com.maan.crm.bean.ProspectQuotationAddOnId;
 import com.maan.crm.bean.ProspectQuotationBasicInfo;
@@ -58,16 +49,21 @@ import com.maan.crm.bean.ProspectsQuotationOtherDetails;
 import com.maan.crm.bean.ProspectsQuotationOtherDetailsId;
 import com.maan.crm.bean.QuoteDetails;
 import com.maan.crm.bean.SequenceMaster;
+import com.maan.crm.document.req.ProspectProductRequest;
 import com.maan.crm.notification.mail.dto.MailFramingReq;
 import com.maan.crm.notification.service.impl.MailThreadServiceImpl;
 import com.maan.crm.repository.ClaimLoginMasterRepository;
 import com.maan.crm.repository.ClientAddressDetailsRepository;
 import com.maan.crm.repository.ClientDetailsRepository;
 import com.maan.crm.repository.InsuranceCompanyMasterRepository;
+import com.maan.crm.repository.LeadProductRepository;
 import com.maan.crm.repository.LeadRepository;
 import com.maan.crm.repository.OldPolicyRepository;
+import com.maan.crm.repository.ProductCoverDetailsRepository;
 import com.maan.crm.repository.ProspectDetailsRepository;
 import com.maan.crm.repository.ProspectOldPolicyDetailsRepository;
+import com.maan.crm.repository.ProspectProductCoverRepository;
+import com.maan.crm.repository.ProspectProductRepository;
 import com.maan.crm.repository.ProspectQuoationBasicInfoRepository;
 import com.maan.crm.repository.ProspectQuotationAddOnRepository;
 import com.maan.crm.repository.ProspectQuotationInsurerDetailsRepository;
@@ -78,6 +74,8 @@ import com.maan.crm.repository.ProspectsQuotationOtherDetailsRepository;
 import com.maan.crm.repository.QuoteDetailsRepository;
 import com.maan.crm.repository.SequenceMasterRepository;
 import com.maan.crm.req.LeadDetailsJsonTempReq;
+import com.maan.crm.req.LeadProductDetailsListReq;
+import com.maan.crm.req.LeadProductDetailsSaveReq;
 import com.maan.crm.req.LeadQuoteDetailsGetReq;
 import com.maan.crm.req.ProspectBulkEditReq;
 import com.maan.crm.req.ProspectDetailsGetAllReq;
@@ -94,11 +92,11 @@ import com.maan.crm.req.ProspectReq;
 import com.maan.crm.req.ProspectSearchReq;
 import com.maan.crm.req.ProspectsQuotationOtherDetailsSaveReq;
 import com.maan.crm.req.TrackingReq;
-import com.maan.crm.res.ClientDetailsGetAllRes;
-import com.maan.crm.res.ClientDetailsGridRes;
+import com.maan.crm.res.ClientDetailsEditRes;
 import com.maan.crm.res.CrmLeadRes;
 import com.maan.crm.res.LeadDetailsGetAllRes;
 import com.maan.crm.res.LeadDetailsGridRes;
+import com.maan.crm.res.LeadProductEditRes;
 import com.maan.crm.res.LeadQuoteDetailsGetRes;
 import com.maan.crm.res.ProspectDetailsRes;
 import com.maan.crm.res.ProspectGetAllCountRes;
@@ -181,6 +179,19 @@ public class ProspectServiceImpl implements ProspectService {
 	
 	@Autowired
 	private SequenceMasterRepository sequenceMasterRepo;
+	
+	@Autowired
+	private LeadProductRepository leadProductRepo;
+	
+	@Autowired
+	private ProductCoverDetailsRepository productCoverDetailsRepo;
+	
+	@Autowired
+	private ProspectProductCoverRepository prospectProductCoverRepo;
+	
+	@Autowired
+	private ProspectProductRepository prospectProductRepo;
+
 	
 	Gson json = new Gson();
 
@@ -1371,6 +1382,38 @@ public class ProspectServiceImpl implements ProspectService {
 
 	
 	
+//	@Override
+//	public ProspectGetAllCountRes getAllProspectCount(ProspectDetailsGetAllReq req) {
+//		ProspectGetAllCountRes res = new ProspectGetAllCountRes();
+//		ModelMapper mapper = new ModelMapper(); 
+//		try {
+//
+//			// Limit, Offset
+//			int limit = StringUtils.isBlank(req.getLimit())? 0 : Integer.valueOf(req.getLimit());
+//			int offset = StringUtils.isBlank(req.getOffset())? 10 : Integer.valueOf(req.getOffset());
+//			Pageable paging = PageRequest.of(limit, offset, Sort.by("updatedDate").descending());
+//				
+//			// Find
+//			String status = "Quote";
+//			Page<LeadDetails> leadDetails = leadRepo.findByInsCompanyIdAndBranchCodeAndStatus(paging, req.getInsId(),req.getBranchCode(),status);
+//			Long count = leadRepo.countByInsCompanyIdAndBranchCodeAndStatus(req.getInsId(), req.getBranchCode(),status);
+//			List<CrmLeadRes> leadlist = new ArrayList<CrmLeadRes>();
+//			for(LeadDetails data : leadDetails.getContent())
+//			{
+//				CrmLeadRes leaddata = new CrmLeadRes();
+//				leaddata = mapper.map(data, CrmLeadRes.class);
+//				leadlist.add(leaddata);
+//			}
+//			res.setProspectDetails(leadlist);
+//			res.setProspectCount(count);
+//		}
+//		catch(Exception e) {
+//			e.printStackTrace();
+//			log.info(e.getMessage());
+//		}
+//		return res;
+//		}
+
 	@Override
 	public ProspectGetAllCountRes getAllProspectCount(ProspectDetailsGetAllReq req) {
 		ProspectGetAllCountRes res = new ProspectGetAllCountRes();
@@ -1383,11 +1426,11 @@ public class ProspectServiceImpl implements ProspectService {
 			Pageable paging = PageRequest.of(limit, offset, Sort.by("updatedDate").descending());
 				
 			// Find
-			String status = "Quote";
-			Page<LeadDetails> leadDetails = leadRepo.findByInsCompanyIdAndBranchCodeAndStatus(paging, req.getInsId(),req.getBranchCode(),status);
-			Long count = leadRepo.countByInsCompanyIdAndBranchCodeAndStatus(req.getInsId(), req.getBranchCode(),status);
+			
+			Page<ProspectProduct> leadDetails = prospectProductRepo.findByInsCompanyIdAndBranchCode(paging, req.getInsId(),req.getBranchCode());
+			Long count = prospectProductRepo.countByInsCompanyIdAndBranchCode(req.getInsId(), req.getBranchCode());
 			List<CrmLeadRes> leadlist = new ArrayList<CrmLeadRes>();
-			for(LeadDetails data : leadDetails.getContent())
+			for(ProspectProduct data : leadDetails.getContent())
 			{
 				CrmLeadRes leaddata = new CrmLeadRes();
 				leaddata = mapper.map(data, CrmLeadRes.class);
@@ -1475,17 +1518,17 @@ public class ProspectServiceImpl implements ProspectService {
 		try {
 
 			// Find All
-			List<LeadDetails> leadDetails = leadRepo.findByClientRefNoOrderByEntryDateDesc(req.getClientRefNo());
+			List<LeadProduct> leadDetails = leadProductRepo.findByClientRefNoOrderByUpdatedDateDesc(req.getClientRefNo());
 			
 			List<LeadDetailsGridRes> leadList = new ArrayList<LeadDetailsGridRes>();
-			for (LeadDetails data : leadDetails) {
+			for (LeadProduct data : leadDetails) {
 				LeadDetailsGridRes leadData = new LeadDetailsGridRes();
 				leadData = mapper.map(data, LeadDetailsGridRes.class);
 				
 				leadList.add(leadData);
 			}
 			res.setLeadDetails(leadList);
-			Long count1 = (Long) leadRepo.countByClientRefNo(req.getClientRefNo());
+			Long count1 = leadProductRepo.countByClientRefNo(req.getClientRefNo());
 			res.setLeadCount(count1);
 			
 		} catch (Exception e) {
@@ -1493,6 +1536,160 @@ public class ProspectServiceImpl implements ProspectService {
 			log.info(e.getMessage());
 			return null;
 
+		}
+		return res;
+	}
+
+	@Override
+	public List<LeadProductDetailsSaveReq> getLeadProdutDetailsList(LeadQuoteDetailsGetReq req) {
+		
+		List<LeadProductDetailsSaveReq> res = new ArrayList<LeadProductDetailsSaveReq>();
+		ModelMapper mapper = new ModelMapper();
+		try {
+
+			// Find All
+			List<ProductCoverDetails> leadDetails = productCoverDetailsRepo.findByLeadIdOrderBySequenceNo(req.getLeadId());
+			
+			for (ProductCoverDetails data : leadDetails) {
+				LeadProductDetailsSaveReq leadData = new LeadProductDetailsSaveReq();
+				leadData = mapper.map(data, LeadProductDetailsSaveReq.class);
+				
+				res.add(leadData);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info(e.getMessage());
+			return null;
+
+		}
+		return res;
+	}
+
+	@Override
+	public List<Error> validateProspectProduct(ProspectProductRequest req) {
+		List<Error> errors = new ArrayList<Error>();
+		try {
+			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info("Exception is --->" + e.getMessage());
+			return errors;
+		}
+		return errors;
+	}
+
+	@Override
+	public ProspectPaymentSuccessRes saveProspectProduct(ProspectProductRequest req) {
+		ProspectPaymentSuccessRes res = new ProspectPaymentSuccessRes();
+		ModelMapper mapper = new ModelMapper();
+		String prospectId = "";
+		if(StringUtils.isNotBlank(req.getProspectId())) {
+			prospectId = req.getProspectId();
+			ProspectProduct oldProp = prospectProductRepo.findByProspectId(prospectId);
+			if(oldProp != null) {
+				prospectProductRepo.delete(oldProp);
+			}
+			ProspectProduct prop = mapper.map(req,ProspectProduct.class);
+			prop.setProspectId(prospectId);
+			prop.setUpdatedDate(new Date());
+			prospectProductRepo.save(prop);
+			
+			List<ProspectProductCover> listPropCoverOld = prospectProductCoverRepo.findByProspectId(prospectId);
+			if(listPropCoverOld != null && listPropCoverOld.size()>0) {
+				prospectProductCoverRepo.deleteAll(listPropCoverOld);
+			}
+			List<LeadProductDetailsSaveReq> propCoverList = req.getLeadProductList();
+			if(propCoverList != null) {
+				int seq = 1;
+				for(LeadProductDetailsSaveReq propCover : propCoverList) {
+					ProspectProductCover ent = mapper.map(propCover,ProspectProductCover.class);
+					ent.setProspectId(prospectId);
+					ent.setLeadId(req.getLeadId());
+					ent.setClientRefNo(req.getClientRefNo());
+					ent.setSequenceNo(seq);
+					prospectProductCoverRepo.save(ent);
+					seq++;
+				}
+			}
+			
+			
+			res.setResponse("Updated Successfully. "+"prospectId : "+ prospectId);
+		}else {
+			SequenceMaster bySequenceName = sequenceMasterRepo.findBySequenceName("PROSPECT_ID");
+			Integer sequenceValue = bySequenceName.getSequenceValue();
+			prospectId = "P" + sequenceValue;
+			
+			ProspectProduct prop = mapper.map(req,ProspectProduct.class);
+			prop.setProspectId(prospectId);
+			prop.setEntryDate(new Date());
+			prospectProductRepo.save(prop);
+			
+			List<LeadProductDetailsSaveReq> propCoverList = req.getLeadProductList();
+			if(propCoverList != null) {
+				int seq = 1;
+				for(LeadProductDetailsSaveReq propCover : propCoverList) {
+					ProspectProductCover ent = mapper.map(propCover,ProspectProductCover.class);
+					ent.setProspectId(prospectId);
+					ent.setLeadId(req.getLeadId());
+					ent.setClientRefNo(req.getClientRefNo());
+					ent.setSequenceNo(seq);
+//					ent.setBusinessTypeId(req.getBusinessTypeId());
+//					ent.setClassId(req.getClassId());
+//					ent.setPolicyTypeId(req.getPolicyTypeId());
+					prospectProductCoverRepo.save(ent);
+					seq++;
+				}
+			}
+			res.setResponse("Inserted Successfully. " + "ProspectId : "+prospectId);
+			bySequenceName.setSequenceValue(sequenceValue + 1);
+			sequenceMasterRepo.save(bySequenceName);
+		}
+		return res;
+	}
+
+	@Override
+	public LeadProductEditRes getProspectProductList(LeadQuoteDetailsGetReq req) {
+		LeadProductEditRes res = new LeadProductEditRes();
+		ModelMapper mapper = new ModelMapper();
+		String prospectId = " ";	
+		String leadId = " ";
+		String clientRefNo = " ";
+		try {
+			if(StringUtils.isNotBlank(req.getProspectId())) {
+				prospectId=req.getProspectId();
+			}
+			ProspectProduct byProspectId = prospectProductRepo.findByProspectId(prospectId);
+			if(byProspectId != null) {
+				leadId = byProspectId.getLeadId();
+			}
+			List<LeadProduct> leadproduct = leadProductRepo.findByLeadId(leadId);
+			if(leadproduct != null && leadproduct.size()>0) {
+				LeadProductDetailsListReq map = mapper.map(leadproduct.get(0),LeadProductDetailsListReq.class);
+				
+				List<ProspectProductCover> coverproduct = prospectProductCoverRepo.findByProspectId(prospectId);
+				if(coverproduct!=null && coverproduct.size()>0) {
+					List<LeadProductDetailsSaveReq> map2List = new ArrayList<>();
+					for(ProspectProductCover pcd : coverproduct) {
+						LeadProductDetailsSaveReq map2 = mapper.map(pcd,LeadProductDetailsSaveReq.class);
+						map2List.add(map2);
+					}
+					
+					map.setLeadProdutList(map2List);
+				}
+				
+				res.setLeadProductList(map);
+				clientRefNo = map.getClientRefNo();
+				ClientDetails clientDetails = clientrepo.findByClientRefNo(clientRefNo);
+				if(clientDetails!=null ) {
+					ClientDetailsEditRes clientDetailsRes = mapper.map(clientDetails,ClientDetailsEditRes.class);
+					res.setClientDetails(clientDetailsRes);
+			    }
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 		return res;
 	}
